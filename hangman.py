@@ -21,6 +21,6 @@ while(chances>0 or win==False):
         chances-=1
         print(f"Litera incercata nu a fost gasita in cuvant,ai {chances} vieti ramase")
         litere_incercate.append(litera_aleasa)
-        if "*" not in cuvant_cr:
+    if "*" not in cuvant_cr:
             win=True
             
