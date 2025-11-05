@@ -8,14 +8,14 @@ hangman_server/
 │   │   │   ├── config.py                 # Configurări (DB, JWT, rate limits)
 │   │   │   │
 │   │   │   ├── models/                   # Database models (SQLAlchemy/Pydantic)
-│   │   │   │   ├── __init__.py
+│   │   │   │   ├── __init__.py           # Gata
 │   │   │   │   ├── user.py               # User model
 │   │   │   │   ├── session.py            # Session model
 │   │   │   │   ├── game.py               # Game model ✓
 │   │   │   │   ├── word.py               # Word/Dictionary model ✓
 │   │   │   │   └── guess.py              # Guess model
 │   │   │   │
-│   │   │   ├── schemas/                  # [LIPSEȘTE FOLDER] Pydantic schemas (request/response)
+│   │   │   ├── schemas/                  # Pydantic schemas (request/response)
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth.py               # Login/Register schemas
 │   │   │   │   ├── session.py            # Session request/response
@@ -39,12 +39,12 @@ hangman_server/
 │   │   │   │   ├── word_service.py       # Dictionary management ✓
 │   │   │   │   └── stats_service.py      # Leaderboard, statistics
 │   │   │   │
-│   │   │   ├── middleware/               # [LIPSEȘTE FOLDER] Custom middleware
+│   │   │   ├── middleware/               # Custom middleware
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth.py               # JWT validation
 │   │   │   │   └── rate_limit.py         # Rate limiting
 │   │   │   │
-│   │   │   ├── utils/                    # [LIPSEȘTE FOLDER] Helper functions
+│   │   │   ├── utils/                    # Helper functions
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── security.py           # Password hashing, token generation
 │   │   │   │   ├── scoring.py            # Score calculation formula
