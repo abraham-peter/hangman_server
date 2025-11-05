@@ -8,14 +8,14 @@ hangman_server/
 │   │   │   ├── config.py                 # Configurări (DB, JWT, rate limits)
 │   │   │   │
 │   │   │   ├── models/                   # Database models (SQLAlchemy/Pydantic)
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── user.py               # [LIPSEȘTE] User model
-│   │   │   │   ├── session.py            # [LIPSEȘTE] Session model
+│   │   │   │   ├── __init__.py           # Gata
+│   │   │   │   ├── user.py               # User model
+│   │   │   │   ├── session.py            # Session model
 │   │   │   │   ├── game.py               # Game model ✓
 │   │   │   │   ├── word.py               # Word/Dictionary model ✓
-│   │   │   │   └── guess.py              # [LIPSEȘTE] Guess model
+│   │   │   │   └── guess.py              # Guess model
 │   │   │   │
-│   │   │   ├── schemas/                  # [LIPSEȘTE FOLDER] Pydantic schemas (request/response)
+│   │   │   ├── schemas/                  # Pydantic schemas (request/response)
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth.py               # Login/Register schemas
 │   │   │   │   ├── session.py            # Session request/response
@@ -24,33 +24,33 @@ hangman_server/
 │   │   │   │
 │   │   │   ├── routes/                   # API endpoints
 │   │   │   │   ├── __init__.py
-│   │   │   │   ├── auth.py               # [LIPSEȘTE] /auth/register, /auth/login
-│   │   │   │   ├── sessions.py           # [LIPSEȘTE] /sessions
+│   │   │   │   ├── auth.py               # /auth/register, /auth/login
+│   │   │   │   ├── sessions.py           # /sessions
 │   │   │   │   ├── games.py              # /games ✓
 │   │   │   │   ├── words.py              # /admin/dictionaries ✓
-│   │   │   │   ├── stats.py              # [LIPSEȘTE] /stats, /leaderboard
-│   │   │   │   └── health.py             # [LIPSEȘTE] /healthz, /version
+│   │   │   │   ├── stats.py              # /stats, /leaderboard
+│   │   │   │   └── health.py             # /healthz, /version
 │   │   │   │
 │   │   │   ├── services/                 # Business logic
 │   │   │   │   ├── __init__.py
-│   │   │   │   ├── auth_service.py       # [LIPSEȘTE] JWT, password hashing
-│   │   │   │   ├── session_service.py    # [LIPSEȘTE] Session management
+│   │   │   │   ├── auth_service.py       # JWT, password hashing
+│   │   │   │   ├── session_service.py    # Session management
 │   │   │   │   ├── game_service.py       # Hangman logic ✓
 │   │   │   │   ├── word_service.py       # Dictionary management ✓
-│   │   │   │   └── stats_service.py      # [LIPSEȘTE] Leaderboard, statistics
+│   │   │   │   └── stats_service.py      # Leaderboard, statistics
 │   │   │   │
-│   │   │   ├── middleware/               # [LIPSEȘTE FOLDER] Custom middleware
+│   │   │   ├── middleware/               # Custom middleware
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth.py               # JWT validation
 │   │   │   │   └── rate_limit.py         # Rate limiting
 │   │   │   │
-│   │   │   ├── utils/                    # [LIPSEȘTE FOLDER] Helper functions
+│   │   │   ├── utils/                    # Helper functions
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── security.py           # Password hashing, token generation
 │   │   │   │   ├── scoring.py            # Score calculation formula
 │   │   │   │   └── validators.py         # Input validation helpers
 │   │   │   │
-│   │   │   └── database.py               # [LIPSEȘTE] DB connection, session maker
+│   │   │   └── database.py               # DB connection, session maker
 │   │   │
 │   │   ├── migrations/                   # Database migrations (Alembic)
 │   │   │   └── [Va fi generat automat]
@@ -62,8 +62,8 @@ hangman_server/
 │   │   │   └── test_sessions.py
 │   │   │
 │   │   ├── openapi.yaml                  # API documentation ✓
-│   │   ├── requirements.txt              # [LIPSEȘTE] Python dependencies
-│   │   └── .env.example                  # [LIPSEȘTE] Environment variables example
+│   │   ├── requirements.txt              # Python dependencies
+│   │   └── .env.example                  # Environment variables example
 │   │
 │   └── client_examples/                  # Example clients ✓
 │       ├── python_client.py
@@ -76,5 +76,5 @@ hangman_server/
 ├── docs/                                 # Documentation ✓
 │   └── README.md
 │
-├── .gitignore                            # [LIPSEȘTE] Git ignore rules
-<!-- └── README.md                             # [LIPSEȘTE] Project overview -->
+├── .gitignore                            # Git ignore rules
+<!-- └── README.md                             # Project overview -->
