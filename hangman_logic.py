@@ -22,7 +22,7 @@ class GameState:
             return True
         return False
                         
-    def wictory_state(self)-> bool | None:
+    def victory_state(self)-> bool | None:
         if "*" not in self.pattern:
             return True
         return False
