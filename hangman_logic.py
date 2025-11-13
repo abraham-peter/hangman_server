@@ -1,5 +1,5 @@
 from cuvant_din_db_criptat import *
-from typing import Optional,Tuple,List,Union,NoReturn
+from typing import NoReturn
 cuvant_criptat=["*","*","R","*"]
 cuvant_real="MERE"
 class GameState:

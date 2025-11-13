@@ -1,18 +1,12 @@
-from backend.server.src.app.app import *
-from fastapi import APIRouter,HTTPException
-from pydantic import BaseModel
-from services.auth_service import hash_password,verify_password,create_acces_token
+from fastapi import APIRouter
+
 router=APIRouter()
 
-class User(BaseModel):
-    email:str
-    password:str
-    nickname:str
+@router.post("/auth/register")
 
-class LoginRequest(BaseModel):
-    email:str
-    password:str
-   
-@app.put("/login")
-async def autentification():
-    pass
+@router.post("/auth/login")
+
+@router.post("/auth/refresh")
+
+@router.get("/users/me")
+
