@@ -1,0 +1,8 @@
+__pychache__
+.venv
+.github
+.python-version
+.vscode
+pyproject.toml
+uv.lock
+README.md
