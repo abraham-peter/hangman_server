@@ -1,12 +1,12 @@
-from fastapi import APIRouter
+from fastapi import APIRouter,status
 
 router=APIRouter()
 
-@router.post("/sessions")
+@router.post("/sessions",status_code=status.HTTP_201_CREATED)
 
-@router.get("/session/{session_id}")
+@router.get("/session/{session_id}",status_code=status.HTTP_201_CREATED)
 
-@router.post("/session/{session_id}/abort")
+@router.post("/session/{session_id}/abort",status_code=status.HTTP_200_OK)
 
-@router.get("/session/{session_id}/games")
+@router.get("/session/{session_id}/games",status_code=status.HTTP_201_CREATED)
 

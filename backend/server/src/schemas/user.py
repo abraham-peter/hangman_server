@@ -1,15 +1,15 @@
-from pydantic import BaseModel
+from pydantic import BaseModel,EmailStr
 from fastapi_users import schemas
 import uuid
 class PostCreate(BaseModel):
     user_id:str | None
-    email:str | None
+    email:EmailStr
     nickname: str |None
     created_at: str | None
     
 class PostResponse(BaseModel):
     user_id:str | None
-    email:str | None
+    email:EmailStr
     nickname: str | None
     created_at: str | None
 
