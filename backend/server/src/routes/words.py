@@ -9,3 +9,5 @@ router=APIRouter()
 @router.patch("/admin/dictionaries/{id}",status_code=status.HTTP_200_OK)
 
 @router.get("/admin/dictionaries/{id}/words",status_code=status.HTTP_200_OK)
+def something():
+    pass

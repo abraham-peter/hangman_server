@@ -12,3 +12,5 @@ router=APIRouter()
 @router.get("/sessions/{session_id}/games/{game_id}/history",status_code=status.HTTP_201_CREATED)
 
 @router.post("/sessions/{session_id}/games/{game_id}/abort",status_code=status.HTTP_200_OK)
+def a():
+    pass

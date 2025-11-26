@@ -14,4 +14,5 @@ async def login(data:Annotated[FormData,Form()]):
 @router.post("/auth/refresh",status_code=status.HTTP_200_OK)
 
 @router.get("/users/me",response_model=PostCreate,status_code=status.HTTP_201_CREATED)
-
+def nothing():
+    pass
