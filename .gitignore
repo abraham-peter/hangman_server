@@ -9,6 +9,6 @@ uv.lock
 README.md
 test.db
 requirements.txt
-backend/.env.example
+.env.example
 
 
