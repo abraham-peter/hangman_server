@@ -1,5 +1,5 @@
+*.pyc
 __pychache__/
-*.pyc[codz]
 .venv
 .github
 .python-version
@@ -8,3 +8,7 @@ pyproject.toml
 uv.lock
 README.md
 test.db
+requirements.txt
+backend/.env.example
+
+

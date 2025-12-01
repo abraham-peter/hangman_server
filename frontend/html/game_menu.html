@@ -3,7 +3,8 @@
 
 <head>
     <link rel="stylesheet" href="/frontend/css/game_menu.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap" rel="stylesheet">
+    <script src="/frontend/javascript/main.js"></script>
 <title>
  Hangman Server
 </title>
@@ -11,26 +12,30 @@
 
 </head>
 
-<body align="center">
-    <div>
-
-    </div>
-    <button onclick="window.location.href='single_game.html' ">
-        Start Single Game
-    </button>
+<body>
+    <div class="flexbox">
+        <div>
+        <img src="/frontend/images/game_menu_title.png" class="menu_title">
+        </div>
+        <div>
+            <button id="start_button", onclick="window.location.href='single_game.html' ">
+            Start Single Game
+            </button>
+        </div>
+        
 
     <div>
         <button onclick="window.location.href='online_game.html'">
             Start Online Game
         </button>
     </div>
-     
-
-    <div>
-        <button onclick="window.location.href='options.html'">
-            Options
-        </button>
+        <div>
+            <button onclick="window.location.href='options.html'">
+                Options
+            </button>
+        </div>
     </div>
+    
      
 
 
