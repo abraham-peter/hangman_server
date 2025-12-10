@@ -8,7 +8,6 @@ pyproject.toml
 uv.lock
 README.md
 test.db
-requirements.txt
 .env.example
 
 
