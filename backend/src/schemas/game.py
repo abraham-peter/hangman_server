@@ -3,7 +3,7 @@ from pydantic import BaseModel
 class PostCreate:
     game_id:str | None
     session_id:str | None
-    status: str | None
+    status: str | None 
     lenght: int | None
     pattern: str | None
     guessed_letters: list[str] | None

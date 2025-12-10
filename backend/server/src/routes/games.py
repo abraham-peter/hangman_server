@@ -1,7 +1,10 @@
 from fastapi import APIRouter
 
 router=APIRouter()
-
+@app.get("/games/")
+def read_games(db: Session= Depends(get_db)):
+    games=db.query(Game).all()
+    return games
 
 @router.post("/session/{session_id}/games")
 

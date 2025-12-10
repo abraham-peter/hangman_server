@@ -1,4 +1,5 @@
-__pychache__
+*.pyc
+__pychache__/
 .venv
 .github
 .python-version
@@ -6,3 +7,8 @@ __pychache__
 pyproject.toml
 uv.lock
 README.md
+test.db
+requirements.txt
+.env.example
+
+

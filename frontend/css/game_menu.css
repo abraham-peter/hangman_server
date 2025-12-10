@@ -1,0 +1,26 @@
+body{
+    font-family: 'Patrick Hand SC', sans-serif;
+    margin:0;
+    
+}
+.title_hangman{
+  
+}
+.flexbox{
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+}
+.start_b{
+    color:green;
+    background-color: aqua;
+    width: 25rem;
+    height: 4rem;
+}
+.hangman_text{
+    font-family: "Comic Sans MS", "Arial Rounded MT Bold", sans-serif;
+    font-size:200px;
+    letter-spacing: 12px;
+    font-weight: bold;
+    color: black;
+}
