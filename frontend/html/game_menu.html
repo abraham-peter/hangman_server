@@ -2,38 +2,41 @@
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/frontend/css/game_menu.css">
-    <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
     <script src="/frontend/javascript/main.js"></script>
-<title>
- Hangman Server
-</title>
+    <title>
+        Hangman Server
+    </title>
 
 
 </head>
 
 <body>
-    <div class="flexbox">
-        <div class="title_hangman">
-        <h1 class="title_hangman">HANGMAN</h1>
-        </div>
-        <div>
-            <button class="start_b" id="start_button", onclick="window.location.href='single_game.html' ">
-            Start Single Game
-            </button>
-        </div>
-        
+    <div class="menu_container">
+        <h1 class="title">HANGMAN</h1>
 
-    <div>
-        <button onclick="window.location.href='online_game.html'">
-            Start Online Game
-        </button>
-    </div>
-        <div>
-            <button onclick="window.location.href='options.html'">
-                Options
-            </button>
+        <div class="menu_buttons">
+            <a href="/frontend/html/single_game.html">
+                <button>Single Player</button>
+            </a>
+            <a href="/frontend/html/online_game.html">
+                <button>Multy Player</button>
+            </a>
+            
         </div>
+        <img class="baloon_child" src="/frontend/images/baloon_child.png">
+        <img class="sound_button" src="/frontend/images/sound_button.png">
+        <img class="help_button" src="/frontend/images/help_button.png">
+        <img  class="baloon" src="/frontend/images/baloon.png" >
+        <a href="/frontend/html/login.html">
+            <button class="log_in_button_menu">Log In</button>
+        </a>
+
     </div>
     
      
