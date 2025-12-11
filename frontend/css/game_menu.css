@@ -3,13 +3,14 @@ body{
     margin:0;
     
 }
-.title_hangman{
-  
+button:hover{
+    cursor: pointer;
 }
 .flexbox{
+    display: flex;
     align-items: center;
     justify-content: center;
-    justify-items: center;
+    flex-direction: column;
 }
 .start_b{
     color:green;
