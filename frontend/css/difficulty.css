@@ -1,0 +1,61 @@
+.body{
+    margin:0;
+    padding: 0;
+    background: white;
+    font-family: 'Amatic SC', cursive;
+}
+h1{
+    font-family: 'Amatic SC', cursive;
+}
+.bg-image{
+    width: 30%;
+    height: 40vh;
+    background-image: url("/frontend/images/background_trees.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.title{
+    font-size: 6rem;
+    font-weight: 700;
+    letter-spacing: 0.8rem;
+    margin: 0 0 1rem 0;
+}
+.container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    height: 85vh;
+}
+.diff_buttons button{
+    background: white;
+    border:3px solid black;
+    font-size: 2.5rem;
+    padding: 1.5rem 3.5rem;
+    cursor: pointer;
+    font-family: 'Amatic SC', cursive;
+    font-weight:700;
+    margin: 0.5rem 2rem
+}
+.diff_buttons button:hover{
+    transform: scale(1.05);
+}
+.diff_buttons button:focus,
+.diff_buttons button:focus-visible{
+    background-color: black;
+    color: white;
+}
+.home_button{
+    position: absolute;
+    top:0;
+    left:20px;
+}
+.character{
+    position: absolute;
+    bottom:28%;
+    left: 45%;
+    right:50%;
+    height: 160px;
+}
