@@ -1,17 +1,14 @@
-from fastapi import APIRouter,status
-from schemas.session import PostCreate,PostResponse
+from fastapi import APIRouter,status,Depends
+from typing import Annotated
+from routes.auth import get_current_active_user
+from schemas.user import User
 router=APIRouter()
 
-@router.post("/sessions",status_code=status.HTTP_201_CREATED)
-async def creaza_sesiune_joc(date:PostCreate)->PostResponse:
-    return PostResponse(
-        session_id="s_789",
-        num_games=date.num_games
-    )
 
-@router.get("/session/{session_id}",status_code=status.HTTP_201_CREATED)
+@router.get("/session/{session_id}/stats",status_code=status.HTTP_201_CREATED)
+async def stats(session_id:str,
+                current_user:Annotated[User,Depends(get_current_active_user)]):
+    session=get_owned_session(session_id,current_user.username)
+    games=get_games_for_session(session_id)
 
-@router.post("/session/{session_id}/abort",status_code=status.HTTP_200_OK)
-
-@router.get("/session/{session_id}/games",status_code=status.HTTP_201_CREATED)
 

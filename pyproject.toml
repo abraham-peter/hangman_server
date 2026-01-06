@@ -3,7 +3,7 @@ name = "hangman-server"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
     "aiosqlite>=0.21.0",
     "fastapi-users-db-sqlalchemy>=7.0.0",
@@ -12,4 +12,5 @@ dependencies = [
     "pwdlib>=0.2.1",
     "pyjwt>=2.10.1",
     "sqlalchemy>=2.0.44",
+    "uvicorn>=0.38.0",
 ]

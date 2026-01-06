@@ -11,8 +11,8 @@ hangman_server/
 │   │   │   │   ├── __init__.py           # Gata
 │   │   │   │   ├── user.py               # User model
 │   │   │   │   ├── session.py            # Session model
-│   │   │   │   ├── game.py               # Game model ✓
-│   │   │   │   ├── word.py               # Word/Dictionary model ✓
+│   │   │   │   ├── game.py               # Game model 
+│   │   │   │   ├── word.py               # Word/Dictionary model 
 │   │   │   │   └── guess.py              # Guess model
 │   │   │   │
 │   │   │   ├── schemas/                  # Pydantic schemas (request/response)
@@ -26,8 +26,8 @@ hangman_server/
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth.py               # /auth/register, /auth/login
 │   │   │   │   ├── sessions.py           # /sessions
-│   │   │   │   ├── games.py              # /games ✓
-│   │   │   │   ├── words.py              # /admin/dictionaries ✓
+│   │   │   │   ├── games.py              # /games 
+│   │   │   │   ├── words.py              # /admin/dictionaries 
 │   │   │   │   ├── stats.py              # /stats, /leaderboard
 │   │   │   │   └── health.py             # /healthz, /version
 │   │   │   │
@@ -35,8 +35,8 @@ hangman_server/
 │   │   │   │   ├── __init__.py
 │   │   │   │   ├── auth_service.py       # JWT, password hashing
 │   │   │   │   ├── session_service.py    # Session management
-│   │   │   │   ├── game_service.py       # Hangman logic ✓
-│   │   │   │   ├── word_service.py       # Dictionary management ✓
+│   │   │   │   ├── game_service.py       # Hangman logic 
+│   │   │   │   ├── word_service.py       # Dictionary management 
 │   │   │   │   └── stats_service.py      # Leaderboard, statistics
 │   │   │   │
 │   │   │   ├── middleware/               # Custom middleware
@@ -61,19 +61,19 @@ hangman_server/
 │   │   │   ├── test_games.py
 │   │   │   └── test_sessions.py
 │   │   │
-│   │   ├── openapi.yaml                  # API documentation ✓
+│   │   ├── openapi.yaml                  # API documentation 
 │   │   ├── requirements.txt              # Python dependencies
 │   │   └── .env.example                  # Environment variables example
 │   │
-│   └── client_examples/                  # Example clients ✓
+│   └── client_examples/                  # Example clients 
 │       ├── python_client.py
 │       └── postman_collection.json
 │
-├── docker/                               # Docker setup ✓
+├── docker/                               # Docker setup 
 │   ├── Dockerfile
 │   └── docker-compose.yaml
 │
-├── docs/                                 # Documentation ✓
+├── docs/                                 # Documentation 
 │   └── README.md
 │
 ├── .gitignore                            # Git ignore rules

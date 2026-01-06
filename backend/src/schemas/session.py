@@ -9,7 +9,11 @@ class PostCreate(BaseModel):
     created_at: str | None
     finished_at: None
     
-class PostResponse(BaseModel):
-    user_id:str | None
-    email:str | None
-    nickname: str |None
+class SessionResponse(BaseModel):
+    word:str
+    tries_left:int
+    status:bool
+    guessed_letters:list[str]
+class GuessRequest(BaseModel):
+    word:str | None
+    letter:str |None
