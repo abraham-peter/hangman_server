@@ -9,6 +9,7 @@ dependencies = [
     "fastapi-users-db-sqlalchemy>=7.0.0",
     "fastapi-users[beanie]>=15.0.1",
     "fastapi[standard]>=0.121.1",
+    "psycopg2-binary>=2.9.11",
     "pwdlib>=0.2.1",
     "pyjwt>=2.10.1",
     "sqlalchemy>=2.0.44",
