@@ -3,9 +3,13 @@ from routes.auth import get_current_active_user
 from schemas.user import User
 from schemas.session import GuessRequest
 from schemas.game import GameOutput
-from services.game_service import apply_guess,record_history,abort_game,playable_in_guess
+from services.game_service import apply_guess
 from typing import Annotated
 import uuid
+from sqlalchemy.orm import Session
+from database import get_db
+from models import Game
+
 router=APIRouter()
 def get_owned_game(session_id:str,game_id:str,user_id:str):
     session=fake_session_db[session_id]
@@ -80,23 +84,29 @@ async def get_session(session_id:str,
 
 @router.post("/sessions/{session_id}/games/{game_id}/guess")
 async def guess (
-    session_id:str,
-    game_id:str,
+    session_id:int,
+    game_id:int,
     guess:GuessRequest,
     current_user:Annotated[User,Depends(get_current_active_user)],
+    db:Session=Depends(get_db),
 ):
+    game=(
+        db.query(Game).join(Session).filter(Game.game_id== game_id,Game.session_id=session_id,Session.user_id==current_user.user_id).first()     #type:ignore
+    )
+    if game is None:
+        raise HTTPException(status_code=404,detail="Game not found")
     try:
-        game=get_owned_game(session_id,game_id,current_user.user_id)
-        updated_game=apply_guess(game,guess)
-        playable_in_guess(game)
-        return{
-            "game_id":game_id,
-            "status":updated_game["status"],
-            "pattern":updated_game["pattern"],
-            "remaining_misses":updated_game["remaining_misses"],
-            "guessed_letters":updated_game["guessed_letters"],
-            "wrong_letters":list(updated_game["wrong_letters"]),
-        }
+        apply_guess(game,guess)
+        db.commit()
+        db.refresh(game)
+        return GameOutput(
+            pattern=game.pattern,
+            guessed_letters=game.guessed_letters,
+            wrong_letters=game.wrong_letters,
+            remaning_misses=game.remaining_misses,
+            status=game.status,
+        )
+            
     except ValueError as e:
         raise HTTPException(
             status_code=422,
@@ -116,7 +126,7 @@ async def state(current_user:Annotated[User,Depends(get_current_active_user)],
     try:
         game=get_owned_game(session_id,game_id,current_user.user_id)
 
-        record_history(game)
+       
 
         return GameOutput(
             pattern=game["pattern"],
@@ -152,8 +162,7 @@ async def abort(current_user:Annotated[User,Depends(get_current_active_user)],
                 game_id:str,):
     try:
         game= game=get_owned_game(session_id,game_id,current_user.user_id)
-        abort_game(game)
-        record_history(game)
+        
         return{
             "game_id":game_id,
             "status":game["status"],

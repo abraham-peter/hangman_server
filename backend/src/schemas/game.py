@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 status_game=["NOT_STARTED","IN_PROGRESS","WON","LOST"]
 fake_db_word="Ada"
 
@@ -15,7 +16,7 @@ class GameStats(BaseModel):
     result: None
 
 class GameOutput(BaseModel):
-    pattern: str | None
+    pattern: str |None
     guessed_letters: list[str] | None
     wrong_letters: list[str] | None
     remaning_misses: int | None
