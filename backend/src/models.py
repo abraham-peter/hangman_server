@@ -1,8 +1,10 @@
 from sqlalchemy import Column,Integer,String,Boolean,DateTime,ForeignKey,JSON
 from sqlalchemy.orm import relationship 
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from src.database import Base
 from services.game_service import generate_uuid
+import uuid 
 
 status_game = ["NOT_STARTED", "IN_PROGRESS", "WON", "LOST"]
 
@@ -22,7 +24,7 @@ class UserDB(Base):
 class Session(Base):
     __tablename__="sessions"
 
-    session_id=Column(String,primary_key=True,default=generate_uuid)
+    session_id=Column(UUID(as_uuid=True),primary_key=True,default=generate_uuid)
     user_id=Column(Integer,ForeignKey("users.user_id"),nullable=False)
     num_games=Column(Integer,nullable=False)
     params=Column(JSON,nullable=True) # dictionary_id, difficulty, language, max_misses, allow_word_guess, seed # SE POATE IGNORA.
@@ -36,8 +38,8 @@ class Session(Base):
 class Game(Base):
     __tablename__="games"
 
-    game_id=Column(Integer,primary_key=True,default=generate_uuid)
-    session_id=Column(String,ForeignKey("sessions.session_id"),nullable=False)
+    game_id=Column(UUID(as_uuid=True),primary_key=True,default=generate_uuid)
+    session_id=Column(UUID(as_uuid=True),ForeignKey("sessions.session_id"),nullable=False)
     word=Column(String,nullable=False)
     pattern=Column(String,nullable=False)
     guessed_letters=Column(JSON,default=list,nullable=False)
