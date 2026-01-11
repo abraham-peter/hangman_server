@@ -1,37 +1,74 @@
-from schemas.session import GuessRequest
-from datetime import datetime,timezone
-def apply_guess(game,guess:GuessRequest):
-    #Terminare program
-    if game.status !="IN_PROGRESS":
-        return game
 
-    #Incercarea literei si plasarea ei
-    word=game.word.lower()
-    if guess.letter:
-        letter=guess.letter.lower()
-        if letter in game.guessed_letters or letter in game.wrong_letters:
-            raise ValueError("Letter already guessed")
-        if len(letter)!=1 and letter.isalpha():
-            raise ValueError("Provide only one letter and not symbols")
-        if letter in word:
-            game.guessed_letters.add(letter)
-        else:
-            game.wrong_letters.add(letter)
-            game.remaining_misses-=1
-    #incercare directa a cuvantului(daca e cazul)
-    #update la pattern
+from fastapi import HTTPException, status
+from models import Game 
+from sqlalchemy.orm import Session 
+from models import Session as SessionModel
+from datetime import datetime,timezone
+from sqlalchemy.sql import func
+import uuid 
+
+def generate_uuid():
+    return str(uuid.uuid4())
+
+def get_owned_game(db: Session, game_id: int, user_id: int) -> Game:
+#    """  
+#    Returneaza jocul daca apartine user-ului.
+#    Arunca HTTPException(404) daca nu exista / nu e al user-ului.
+#    """
+    game = ( 
+        db.query(Game)
+        .join(SessionModel, Game.session_id==SessionModel.session_id)
+        .filter(Game.game_id==game_id)
+        .filter(SessionModel.user_id==user_id)
+        .first()
+    )
+    if not game:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Game not found or not owned by user"
+        )
+    return game
+
+def apply_guess(game:Game,guess:str):
+#    #Terminare program
+#    if game.status !="IN_PROGRESS":
+#        return game
+
+#    """
+#    Aplică o ghicire pentru o literă la jocul curent.  
+#    Modifică game direct (ORM). Commit-ul se face în route.
+#    Ridică ValueError dacă litera este invalidă sau deja ghicită.
+#    """
+
+    letter=letter.lower()
+    # Validare Litera 
+    if len(letter) != 1 or not letter.isalpha():
+        raise ValueError("Provide only one alphabet letter.")
+    # Verificam daca litera a fost, sau nu, ghicita deja.
+    if letter in game.guessed_letters or letter in game.wrong_letters:
+        raise ValueError(f"Letter '{letter}' has already been guessed.")
+    # Ghicire corecta
+    if letter in game.word.lower():
+        game.guessed_letters.append(letter)
+    else:
+        #Ghicire gresita
+        game.wrong_letters.append(letter)
+        game.remaining_misses -= 1
+    # Updatam pattern-ul
     new_pattern=""
-    for char in word:
-        if char in game.guessed_letters:
+    for char in game.word:
+        if char.lower() in game.guessed_letters:
             new_pattern+=char
         else:
             new_pattern+="*"
     game.pattern=new_pattern
-    #Se intelege
-    if game.pattern==word:   
-        game.status="WON"
+    #Se intelege (Asta a zis Peter)
+    if "*" not in new_pattern:
+        game.status="WON :o"
+        game.finished_at=datetime.now(timezone_utc)
     elif game.remaining_misses<=0:
-        game.status="LOST" 
+        game.status="LOST :(((("
+        game.finished_at=datetime.now(timezone_utc) 
     return game  
 
 
