@@ -1,32 +1,20 @@
-from typing import AsyncGenerator
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker,declarative_base
+from hangman_server.backend.src.models import UserDB
+import dotenv 
+load_env()
 
-from fastapi import Depends
-from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
-from sqlalchemy.ext.declarative import DeclarativeMeta, declarative_base
-from sqlalchemy.orm import sessionmaker
+SQLALCHEMY_DATABASE_URL="postgresql://postgres:9GL7q8eNEf9c@localhost:5432/fastapi_db"
 
-DATABASE_URL = "sqlite+aiosqlite:///./test.db"
-Base: DeclarativeMeta = declarative_base()
+engine=create_engine(SQLALCHEMY_DATABASE_URL)
 
+Session_Local=sessionmaker(autocommit=False,autoflush=False,bind=engine)
 
-class User(SQLAlchemyBaseUserTableUUID, Base):
-    pass
-
-
-engine = create_async_engine(DATABASE_URL)
-async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
-
-
-async def create_db_and_tables():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-
-
-async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_maker() as session:
-        yield session
-
-
-async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, User)
+Base=declarative_base()
+Base.metadata.create_all(bind=engine)
+def get_db():
+    db=Session_Local()
+    try:
+        yield db
+    finally:
+        db.close()

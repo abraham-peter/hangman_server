@@ -1,15 +1,19 @@
 from pydantic import BaseModel
 from typing import Union
-class PostCreate(BaseModel):
-    session_id: str | None
-    user_id: str | None
+class SessionCreate(BaseModel):
     num_games: int |None
-    params: dict[str, Union[str,int,bool]]
-    status: str | None
-    created_at: str | None
-    finished_at: None
+    dictionary_id: str
+    difficulty: str 
+    language: str 
+    max_misses = int 
+    allow_word_guess: bool 
+    seed: int | None = None
     
-class PostResponse(BaseModel):
-    user_id:str | None
-    email:str | None
-    nickname: str |None
+class SessionResponse(BaseModel):
+    session_id: str
+    num_games: int
+    created_at: str
+    status: str
+class GuessRequest(BaseModel):
+    word:str | None
+    letter:str |None

@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class PostCreate:
+class PostCreate(BaseModel):
     session_id: str | None
     games_total: str | None
     game_finished: str | None
@@ -11,7 +11,7 @@ class PostCreate:
     avg_time_sec: int | None
     composite_score: int | None
 
-class PostResponse:
+class PostResponse(BaseModel):
     session_id: str | None
     games_total: str | None
     game_finished: str | None
