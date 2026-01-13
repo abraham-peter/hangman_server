@@ -3,11 +3,12 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
 from src.database import Base
+from enum import Enum
+from sqlalchemy import Enum as SAENum 
 from services.game_service import generate_uuid
+from schemas.session import SessionStatus
+from schemas.game import GameStatus
 import uuid 
-
-status_game = ["NOT_STARTED", "IN_PROGRESS", "WON", "LOST"]
-
 
 class UserDB(Base):
     __tablename__="users"
@@ -28,7 +29,7 @@ class Session(Base):
     user_id=Column(Integer,ForeignKey("users.user_id"),nullable=False)
     num_games=Column(Integer,nullable=False)
     params=Column(JSON,nullable=True) # dictionary_id, difficulty, language, max_misses, allow_word_guess, seed # SE POATE IGNORA.
-    status=Column(String,default="ACTIVE",nullable=False)
+    status=Column(SAENum(SessionStatus,name="session_status"),default=SessionStatus.ACTIVE,nullable=False)
     created_at=Column(DateTime(timezone=True),server_default=func.now())
     finished_at=Column(DateTime(timezone=True),nullable=True)
 
@@ -46,7 +47,7 @@ class Game(Base):
     wrong_letters=Column(JSON,default=list,nullable=False)
     remaining_misses=Column(Integer,default=6)
     total_guesses=Column(Integer,default=0)
-    status=Column(String,default="IN_PROGRESS")
+    status=Column(SAENum(GameStatus,name="game_status"),default=GameStatus.IN_PROGRESS,nullable=False)
     result=Column(String,nullable=True)
     created_at=Column(DateTime(timezone=True),server_default=func.now())
     updated_at=Column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now())
@@ -54,4 +55,3 @@ class Game(Base):
 
     session= relationship("Session",back_populates="games")
 
-    

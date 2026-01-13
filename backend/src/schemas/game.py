@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from typing import Optional
-status_game=["NOT_STARTED","IN_PROGRESS","WON","LOST"]
+from enum import Enum
 
 class GameStats(BaseModel):
     game_id:str | None
     session_id:str | None
-    status: str= "IN_PROGRESS"
-    lenght: int=0
+    status: str= GameStatus.IN_PROGRESS # NEEDS CHECKING (TREBE NEAPARAT)
+    length: int=0
     pattern: str=""
     guessed_letters: list[str]=[]
     wrong_letters: list[str]=[]
@@ -24,4 +24,12 @@ class GameOutput(BaseModel):
     status: str
     total_guesses: int
     result: Optional[str] = None
+    class Config:
+        from_attributes=True
     
+class GameStatus(str, Enum):
+    NOT_STARTED ="NOT_STARTED"
+    IN_PROGRESS="IN_PROGRESS"
+    WON="WON"
+    LOST="LOST"
+    ABORTED="ABORTED"

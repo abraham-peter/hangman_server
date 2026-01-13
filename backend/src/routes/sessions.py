@@ -1,12 +1,13 @@
 from fastapi import APIRouter,HTTPException,Depends,status
 from routes.auth import get_current_active_user
 from schemas.user import User
-from schemas.session import SessionResponse, SessionCreate
-from schemas.session import GuessRequest
-from schemas.game import GameOutput
+from schemas.session import SessionResponse, SessionCreate, SessionStatus
+from schemas.session import GuessRequest, SessionStatus
+from schemas.game import GameOutput, GameStatus,GameStats
 from services.game_service import apply_guess, get_owned_game
 from typing import Annotated
-import uuid
+from uuid import UUID
+from datetime import datetime,timezone
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Game
@@ -32,7 +33,7 @@ async def create_session(session_data: SessionCreate,  # aici pui schema Pydanti
         max_misses=session_data.max_misses,
         allow_word_guess=session_data.allow_word_guess,
         seed=session_data.seed, 
-        status="ACTIVE"
+        status=SessionStatus.ACTIVE
     )
     db.add(new_session)
     db.commit()
@@ -63,7 +64,8 @@ async def abort_session(
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
     if session.status != "ACTIVE":
         raise HTTPException(status_code=409, detail="Session already finished")
-    session.status= "ABORTED"
+    session.status= SessionStatus.ABORTED
+    session.finished_at=datetime.now(timezone.utc)
     db.commit()
     db.refresh(session)
     return {"session_id": session.session_id, "status": session.status, "message": "Session aborted with success"}
@@ -93,9 +95,9 @@ async def session_stats(
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
     games = db.query(GameModel).filter_by(session_id=session_id).all()
     total=len(games)
-    finished=sum(1 for g in games if g.status in ["WON", "LOST"])
-    wins=sum(1 for g in games if g.status=="WON")
-    losses=sum(1 for g in games if g.status=="LOST")
+    finished=sum(1 for g in games if g.status in [GameStatus.WON, GameStatus.LOST])
+    wins=sum(1 for g in games if g.status==GameStatus.WON)
+    losses=sum(1 for g in games if g.status==GameStatus.LOST)
     avg_guesses = sum(g.total_guesses for g in games)/total if total else 0
     avg_wrong = sum(len(g.wrong_letters) for g in games)/total if total else 0
     return {
