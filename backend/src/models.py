@@ -7,6 +7,7 @@ from enum import Enum
 from sqlalchemy import Enum as SAENum 
 from services.game_service import generate_uuid
 from schemas.session import SessionStatus
+from schemas.game import GameStatus
 import uuid 
 
 class UserDB(Base):
