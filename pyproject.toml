@@ -13,6 +13,7 @@ dependencies = [
     "psycopg2-binary>=2.9.11",
     "pwdlib>=0.2.1",
     "pyjwt>=2.10.1",
+    "redis>=7.1.0",
     "sqlalchemy>=2.0.44",
     "uvicorn>=0.38.0",
 ]
