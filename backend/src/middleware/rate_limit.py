@@ -4,7 +4,7 @@ from fastapi.security.utils import get_authorization_scheme_param
 import jwt
 from routes.auth import SECRET_KEY,ALGORITHM
 
-async def rate_limitng_key(request:Request)->str | None:
+async def rate_limit_key(request:Request)->str | None:
     token=request.cookies.get("access_token")
 
     if token:
@@ -19,4 +19,11 @@ async def rate_limitng_key(request:Request)->str | None:
                 pass
     client_ip=request.client.host if request.client else "unknown"
     return f"ip:{client_ip}"
+
+def rate_limit(times: int, seconds: int):
+    return RateLimiter(
+        times=times,
+        seconds=seconds,
+        identifier=rate_limit_key,
+    )
 

@@ -14,7 +14,16 @@ async def startup():
     redis_client=redis.from_url(
         "redis://localhost:6379",
         encoding="utf-8",
+        decode_responses=True,
     )
+    await FastAPILimiter.init(
+        redis_client,
+        key_prefix="hangman",
+    )
+@app.on_event("shutdown")
+async def shutdown():
+    if redis_client:
+        await redis_client.close()
 
 
 
