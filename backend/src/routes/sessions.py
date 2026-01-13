@@ -2,7 +2,7 @@ from fastapi import APIRouter,HTTPException,Depends,status
 from routes.auth import get_current_active_user
 from schemas.user import User
 from schemas.session import SessionResponse, SessionCreate, SessionStatus
-from schemas.session import GuessRequest, SessionStatus
+from schemas.guess import GuessRequest
 from schemas.game import GameOutput, GameStatus,GameStats
 from services.game_service import apply_guess, get_owned_game
 from typing import Annotated
@@ -11,7 +11,7 @@ from datetime import datetime,timezone
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Game
-from models import Session
+from models import Session,Game,GameStatus
 from utils.rate_limiter import RateLimiter
 
 router = APIRouter(
@@ -44,10 +44,11 @@ async def create_session(session_data: SessionCreate,  # aici pui schema Pydanti
 @router.get("/{session_id}", response_model=SessionResponse)
 async def get_session(
     session_id: str,
-    current_user: Annotated(User, Depends(get_current_active_user)),
-    db: Sesssion = Depends(get_db),
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
 ):
-    session = db.query(Session).filter_by(session_id=session_id).first()
+    session_uuid=UUID(session_id)
+    session = db.query(Session).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail= "Session not found or not owned by user")
     return session
@@ -56,19 +57,20 @@ async def get_session(
 @router.post("/{session_id}/abort", status_code=status.HTTP_200_OK)
 async def abort_session(
     session_id: str,
-    current_user: Annotated(User, Depends(get_current_active_user)),
+    current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
 ):
-    session=db.query(Session).filter_by(session_id=session_id).first()
+    session_uuid=UUID(session_id)
+    session=db.query(Session).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
-    if session.status != "ACTIVE":
+    if session.status != SessionStatus.ACTIVE:
         raise HTTPException(status_code=409, detail="Session already finished")
     session.status= SessionStatus.ABORTED
     session.finished_at=datetime.now(timezone.utc)
     db.commit()
     db.refresh(session)
-    return {"session_id": session.session_id, "status": session.status, "message": "Session aborted with success"}
+    return {"session_id": str(session.session_id), "status": session.status.value, "message": "Session aborted with success"}
 
 # GET /sessions/{session_id}/games -> Lista jocuri
 @router.get("/{session_id}/games")
@@ -77,10 +79,11 @@ async def list_games(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
 ):
-    session = db.query(SessionModel).filter_by(session_id=session_id).first()
+    session_uuid=UUID(session_id)
+    session = db.query(Session).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
-    games = db.query(GameModel).filter_by(session_id=session_id).all()
+    games = db.query(Game).filter_by(session_id=session_uuid).all()
     return games
 
 # GET /sessions/{session_id}/stats -> Statisticile
@@ -90,10 +93,11 @@ async def session_stats(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
 ):
-    session = db.query(SessionModel).filter_by(session_id=session_id).first()
+    session_uuid=UUID(session_id)
+    session = db.query(Session).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
-    games = db.query(GameModel).filter_by(session_id=session_id).all()
+    games = db.query(Game).filter_by(session_id=session_uuid).all()
     total=len(games)
     finished=sum(1 for g in games if g.status in [GameStatus.WON, GameStatus.LOST])
     wins=sum(1 for g in games if g.status==GameStatus.WON)

@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 import jwt
-import uuid
+from uuid import uuid
 from jwt.exceptions import InvalidTokenError
 from fastapi import APIRouter,status,Depends,HTTPException
 from typing import Annotated
