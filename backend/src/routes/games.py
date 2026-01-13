@@ -8,8 +8,9 @@ from schemas.game import GameOutput
 from services.game_service import apply_guess, get_owned_game
 from database import get_db
 from models import Game as GameModel
+from schemas.game import GameStatus
 from utils.rate_limiter import RateLimiter
-import uuid
+from uuid import UUID
 
 router = APIRouter(
     prefix="/sessions/{session_id}/games",
@@ -27,12 +28,12 @@ async def create_game(
     word="Ada"
     new_game = GameModel(
         session_id=session_id,
-        word=word 
+        word=word, 
         pattern="*"*len(word),
         guessed_letters=[],
         wrong_letters=[],
-        remaining_misses=6
-        status="IN_PROGRESS"
+        remaining_misses=6,
+        status=GameStatus.IN_PROGRESS
     )
     db.add(new_game)
     db.commit()
@@ -77,6 +78,7 @@ async def game_history(
     db: Session = Depends(get_db)
 ):
     game = get_owned_game(db, game_id, current_user.user_id)
+    return game.history
 
 # POST /sessions/{session_id}/games/{game_id}/abort → închide joc curent
 @router.post("/{game_id}/abort")
@@ -87,9 +89,9 @@ async def abort_game(
     db: Session = Depends(get_db)
 ):
     game = get_owned_game(db, game_id, current_user.user_id)
-    if game.status not in ["IN_PROGRESS"]:
+    if game.status != GameStatus.IN_PROGRESS:
         raise HTTPException(status_code=409,detail="Game already finished")
-    game.status = "ABORTED"
+    game.status = GameStatus.ABORTED
     db.commit()
     db.refresh(game)
     return {"game_id": game.game_id, "status": game.status, "message": "Game aborted with success"}
