@@ -25,7 +25,7 @@ async def create_game(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
 ):
-    session_uuid=UUID(session_id)
+    session_id=UUID(session_id)
     for obj in db.new:
         if isinstance(obj, GameModel) and obj.session_id == session_uuid:
             return obj
