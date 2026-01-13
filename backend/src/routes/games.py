@@ -17,80 +17,22 @@ router = APIRouter(
     dependencies=[Depends(RateLimiter(times=5, seconds=60))]
 )
 
-<<<<<<< HEAD
-    
-@router.post("/sessions")
-async def sessions(
-    current_user:Annotated[User,Depends(get_current_active_user)],
-    db:Session=(get_db)
-    ):
-    session_id=str(uuid.uuid4())
-    game_id=str(uuid.uuid4())
-    fake_session_db[session_id]={
-        "user_id":current_user.user_id,
-        "games":{
-            game_id:{
-                "game_id":game_id,
-                "session_id":session_id,
-                "user_id":current_user.user_id,
-                "word":"ada",
-                "pattern":"***",
-                "guessed_letters":set(),
-                "wrong_letters":set(),
-                "remaning_misses":6,
-                "status":"IN_PROGRESS",
-            }
-        }
-    }
-    return {"session_id":session_id,
-            "game_id":game_id}
-
-@router.get("/sessions/{session_id}")
-async def get_session(session_id:str, 
-                      current_user:Annotated[User,Depends(get_current_active_user)]
-                      ):
-    session=fake_session_db[session_id]
-    if not session:
-        raise HTTPException(status_code=404,detail="Session not found")
-    if session["owner"]!=current_user.username:
-        raise HTTPException(status_code=403,detail="Not your session")
-    masked_word=[]
-    for letter in session["word"]:
-        if letter in session["guessed_letters"]:
-            masked_word.append(letter)
-        else:
-            masked_word.append("_")
-    return {
-        "session_id":session_id,
-        "games":list(session["games"].keys())
-    }
-
-
-@router.post("/sessions/{session_id}/games/{game_id}/guess")
-async def guess (
-    session_id:int,
-    game_id:int,
-    guess:GuessRequest,
-    current_user:Annotated[User,Depends(get_current_active_user)],
-    db:Session=Depends(get_db),
-=======
 # POST /sessions/{session_id}/games → creează joc nou
 @router.post("", response_model=GameOutput, status_code=status.HTTP_201_CREATED)
 async def create_game(
     session_id: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
->>>>>>> 740381c2401b1910c7ae8751e20ce42b210f5605
 ):
     word="Ada"
     new_game = GameModel(
         session_id=session_id,
-        word=word 
+        word=word,
         pattern="*"*len(word),
         guessed_letters=[],
         wrong_letters=[],
-        remaining_misses=6
-        status="IN_PROGRESS"
+        remaining_misses=6,
+        status="IN_PROGRESS",
     )
     db.add(new_game)
     db.commit()
