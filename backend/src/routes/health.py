@@ -4,8 +4,10 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from database import get_db
 from config import APP_VERSION
+from middleware.rate_limit import RateLimiter
 
-router=APIRouter()
+router=APIRouter(
+    dependencies=[Depends(RateLimiter(times=10, seconds=60))])
 
 @router.get("/time", status_code=status.HTTP_200_OK)
 def server_time():

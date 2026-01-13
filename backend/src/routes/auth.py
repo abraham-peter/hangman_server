@@ -16,7 +16,6 @@ from sqlalchemy.orm import Session
 from database import get_db
 from middleware.rate_limit import rate_limit
 
-
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
     async def __call__(self, request: Request) -> str | None:
         # Extragem token-ul din cookie

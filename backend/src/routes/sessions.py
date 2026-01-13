@@ -12,12 +12,12 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Game
 from models import Session,Game,GameStatus
-from utils.rate_limiter import RateLimiter
+from middleware.rate_limit import RateLimiter
 
 router = APIRouter(
     prefix="/sessions",
     tags=["sessions"],
-    dependencies=[Depends(RateLimiter(times=5, seconds=60))]
+    dependencies=[Depends(RateLimiter(times=10, seconds=60))]
 )
 # POST /sessions -> Creeaza sesiune noua
 @router.post("", response_model=SessionResponse, status_code=status.HTTP_201_CREATED)

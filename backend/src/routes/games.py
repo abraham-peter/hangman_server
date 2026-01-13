@@ -9,13 +9,13 @@ from services.game_service import apply_guess, get_owned_game
 from database import get_db
 from models import Game as GameModel
 from schemas.game import GameStatus
-from utils.rate_limiter import RateLimiter
+from middleware.rate_limit import RateLimiter
 from uuid import UUID
 
 router = APIRouter(
     prefix="/sessions/{session_id}/games",
     tags=["games"],
-    dependencies=[Depends(RateLimiter(times=5, seconds=60))]
+    dependencies=[Depends(RateLimiter(times=10, seconds=60))]
 )
 
 # POST /sessions/{session_id}/games → creează joc nou
