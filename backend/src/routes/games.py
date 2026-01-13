@@ -25,10 +25,8 @@ async def create_game(
     current_user: Annotated[User, Depends(get_current_active_user)],
     db: Session = Depends(get_db)
 ):
-    session_id=UUID(session_id)
-    for obj in db.new:
-        if isinstance(obj, GameModel) and obj.session_id == session_uuid:
-            return obj
+    session_uuid=UUID(session_id)
+    existing_game = db.query(GameModel).filter(GameModel.session_id==session_uuid).first()
     word="Ada"
     new_game = GameModel(
         session_id=session_id,
@@ -69,7 +67,7 @@ async def guess_game(
         apply_guess(game, guess.letter or guess.word)
         db.commit()
         db.refresh(game)
-        return game 
+        return game
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
     
