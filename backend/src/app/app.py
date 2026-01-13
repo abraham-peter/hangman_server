@@ -1,4 +1,5 @@
 from fastapi import Depends, FastAPI
+from fastapi_limiter import FastAPILimiter
 from schemas.user import User,RegisterUser
 from middleware.auth import auth_backend, current_active_user, fastapi_users
 from routes.games import router as games_router
@@ -33,6 +34,9 @@ app.include_router(
     prefix="/game",
     tags=["game"]
 )
+@app.on_event("startup")
+async def startup():
+    
 
 
 # @app.get("/authenticated-route")

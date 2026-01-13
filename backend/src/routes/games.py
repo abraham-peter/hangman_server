@@ -38,7 +38,8 @@ Game = {
     
 @router.post("/sessions")
 async def sessions(
-    current_user:Annotated[User,Depends(get_current_active_user)]
+    current_user:Annotated[User,Depends(get_current_active_user)],
+    db:Session=(get_db)
     ):
     session_id=str(uuid.uuid4())
     game_id=str(uuid.uuid4())
