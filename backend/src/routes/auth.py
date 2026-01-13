@@ -36,19 +36,9 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
 SECRET_KEY="739b2d9c01de56d80cec148f3b1bd7c37959b83fa122bb07b7ab284d1500f751"
 ALGORITHM="HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES=30
-fake_users_db = {
-    "johndoe": {
-        "user_id": str(uuid.uuid4()), 
-        "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
-        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$wagCPXjifgvUFBzq4hqe3w$CYaIb8sB+wtD+Vu/P4uod1+Qof8h+1g7bbDlBID48Rc",
-        "disabled": False,
-    }
-}
 
-password_hash = PasswordHash.recommended()
 router=APIRouter()
+password_hash = PasswordHash.recommended()
 oauth2_scheme=OAuth2PasswordBearer(tokenUrl="auth/login")
 def verrify_password(plain_password:str,hashed_password:str):
     return password_hash.verify(plain_password,hashed_password)

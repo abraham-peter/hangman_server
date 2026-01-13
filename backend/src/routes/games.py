@@ -1,40 +1,23 @@
-from fastapi import APIRouter,HTTPException,Depends,status
-from routes.auth import get_current_active_user
+from fastapi import APIRouter, HTTPException, Depends, status
+from sqlalchemy.orm import Session
+from typing import Annotated
 from schemas.user import User
+from routes.auth import get_current_active_user
 from schemas.session import GuessRequest
 from schemas.game import GameOutput
-from services.game_service import apply_guess
-from typing import Annotated
-import uuid
-from sqlalchemy.orm import Session
+from services.game_service import apply_guess, get_owned_game
 from database import get_db
-from models import Game
+from models import Game as GameModel
+from utils.rate_limiter import RateLimiter
+import uuid
 
-router=APIRouter()
-def get_owned_game(session_id:str,game_id:str,user_id:str):
-    session=fake_session_db[session_id]
-    if not session:
-        raise KeyError("Session_not_found")
-    if session["user_id"]!=user_id:
-        raise PermissionError("Not your session")
-    game=session["games"]
-    if not game:
-        raise KeyError("Game not found")
-    return game
-fake_session_db={}
-Game = {
-    "game_id": "g_123",
-    "session_id": "s_456",
-    "user_id": "u_1",
-    "word": "ada",
-    "pattern": "***",
-    "guessed_letters": set(),
-    "wrong_letters": set(),
-    "remaining_misses": 6,
-    "status": "IN_PROGRESS",
-    "history": [],
-}
+router = APIRouter(
+    prefix="/sessions/{session_id}/games",
+    tags=["games"],
+    dependencies=[Depends(RateLimiter(times=5, seconds=60))]
+)
 
+<<<<<<< HEAD
     
 @router.post("/sessions")
 async def sessions(
@@ -90,92 +73,81 @@ async def guess (
     guess:GuessRequest,
     current_user:Annotated[User,Depends(get_current_active_user)],
     db:Session=Depends(get_db),
+=======
+# POST /sessions/{session_id}/games → creează joc nou
+@router.post("", response_model=GameOutput, status_code=status.HTTP_201_CREATED)
+async def create_game(
+    session_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+>>>>>>> 740381c2401b1910c7ae8751e20ce42b210f5605
 ):
-    game=(
-        db.query(Game).join(Session).filter(Game.game_id== game_id,Game.session_id=session_id,Session.user_id==current_user.user_id).first()     #type:ignore
+    word="Ada"
+    new_game = GameModel(
+        session_id=session_id,
+        word=word 
+        pattern="*"*len(word),
+        guessed_letters=[],
+        wrong_letters=[],
+        remaining_misses=6
+        status="IN_PROGRESS"
     )
-    if game is None:
-        raise HTTPException(status_code=404,detail="Game not found")
+    db.add(new_game)
+    db.commit()
+    db.refresh(new_game)
+    return new_game
+
+# GET /sessions/{session_id}/games/{game_id}/state → starea jocului
+@router.get("/{game_id}/state", response_model=GameOutput)
+async def get_game_state(
+    session_id: str,
+    game_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+):
+    game = get_owned_game(db,game_id,current_user.user_id)
+    return game 
+
+# POST /sessions/{session_id}/games/{game_id}/guess → ghicire literă sau cuvânt
+@router.post("/{game_id}/guess", response_model=GameOutput)
+async def guess_game(
+    session_id: str,
+    game_id: str,
+    guess: GuessRequest,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+):
+    game=get_owned_game(db,game_id,current_user.user_id)
     try:
-        apply_guess(game,guess)
+        apply_guess(game, guess.letter or guess.word)
         db.commit()
         db.refresh(game)
-        return GameOutput(
-            pattern=game.pattern,
-            guessed_letters=game.guessed_letters,
-            wrong_letters=game.wrong_letters,
-            remaning_misses=game.remaining_misses,
-            status=game.status,
-        )
-            
+        return game 
     except ValueError as e:
-        raise HTTPException(
-            status_code=422,
-            detail=str(e),
-        )
+        raise HTTPException(status_code=422, detail=str(e))
     
+# GET /sessions/{session_id}/games/{game_id}/history → istoric ghiciri
+@router.get("/{game_id}/history")
+async def game_history(
+    session_id: str,
+    game_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+):
+    game = get_owned_game(db, game_id, current_user.user_id)
 
-
-
-@router.get("/sessions/{session_id}/games/{game_id}/state",
-            response_model=GameOutput,
-            status_code=status.HTTP_200_OK,)
-async def state(current_user:Annotated[User,Depends(get_current_active_user)],
-                session_id:str,
-                game_id:str,
-                ):
-    try:
-        game=get_owned_game(session_id,game_id,current_user.user_id)
-
-       
-
-        return GameOutput(
-            pattern=game["pattern"],
-            remaining_misses=game["remaining_misses"],
-            guessed_letters=game["guessed_letters"],
-            wrong_letters=list(game["wrong_letters"]),
-            status=game["status"]
-        )
-    except PermissionError:
-        raise HTTPException(status_code=403,detail="Forbidden")
-    except KeyError as e:
-        raise HTTPException(status_code=404,detail="Game not found")
-
-
-@router.get("/sessions/{session_id}/games/{game_id}/history",
-            status_code=status.HTTP_200_OK)
-async def hystory(current_user:Annotated[User,Depends(get_current_active_user)],
-                session_id:str,
-                game_id:str,):
-    try:
-        game=get_owned_game(session_id,game_id,current_user.user_id)
-        return game["history"]
-    except PermissionError:
-        raise HTTPException(status_code=403,detail="Forbidden")
-    except KeyError as e:
-        raise HTTPException(status_code=404,detail="Game not found")
-
-
-@router.post("/sessions/{session_id}/games/{game_id}/abort",
-             status_code=status.HTTP_200_OK,)
-async def abort(current_user:Annotated[User,Depends(get_current_active_user)],
-                session_id:str,
-                game_id:str,):
-    try:
-        game= game=get_owned_game(session_id,game_id,current_user.user_id)
-        
-        return{
-            "game_id":game_id,
-            "status":game["status"],
-            "message":"Game aborted succesfully",
-        }
-    except ValueError:
-        raise HTTPException(
-            status_code=409,
-            detail="Game is already finished",
-        )
-    except PermissionError:
-        raise HTTPException(status_code=403,detail="Forbidden")
-    except KeyError as e:
-        raise HTTPException(status_code=404,detail="Game not found")
-
+# POST /sessions/{session_id}/games/{game_id}/abort → închide joc curent
+@router.post("/{game_id}/abort")
+async def abort_game(
+    session_id: str,
+    game_id: str,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db)
+):
+    game = get_owned_game(db, game_id, current_user.user_id)
+    if game.status not in ["IN_PROGRESS"]:
+        raise HTTPException(status_code=409,detail="Game already finished")
+    game.status = "ABORTED"
+    db.commit()
+    db.refresh(game)
+    return {"game_id": game.game_id, "status": game.status, "message": "Game aborted with success"}
