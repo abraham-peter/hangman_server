@@ -22,6 +22,18 @@ class UserDB(Base):
 
     sessions = relationship("Session", back_populates="user")
 
+class AdminDB(Base):
+    __tablename__="admin"
+
+    user_id=Column(Integer,primary_key=True,index=True)
+    username=Column(String,unique=True,index=True,nullable=False)
+    email=Column(String,unique=True,index=True,nullable=False)
+    hashed_password=Column(String,nullable=False)
+    is_active=Column(Boolean,default=True)
+    is_admin=Column(Boolean,default=False,nullable=False)
+    created_at=Column(DateTime(timezone=True),server_default=func.now())
+
+    sessions = relationship("Session", back_populates="admin")
 class Session(Base):
     __tablename__="sessions"
 
