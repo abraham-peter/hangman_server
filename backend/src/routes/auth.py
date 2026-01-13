@@ -4,7 +4,7 @@ from uuid import uuid
 from jwt.exceptions import InvalidTokenError
 from fastapi import APIRouter,status,Depends,HTTPException
 from typing import Annotated
-from fastapi import Response
+from fastapi import Response, Depends
 from pwdlib import PasswordHash
 from schemas.user import User,UserInDB,Token,TokenData,RegisterUser
 from models import UserDB
@@ -14,6 +14,8 @@ from starlette.requests import Request
 from services.auth_service import get_user_by_id,get_user_by_username
 from sqlalchemy.orm import Session
 from database import get_db
+from middleware.rate_limit import rate_limit
+
 
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
     async def __call__(self, request: Request) -> str | None:
@@ -33,6 +35,9 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
 
 # to get a string like this run:
 # openssl rand -hex 32
+# -------------------------------------- 
+# Config 
+# -------------------------------------
 SECRET_KEY="739b2d9c01de56d80cec148f3b1bd7c37959b83fa122bb07b7ab284d1500f751"
 ALGORITHM="HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES=30
@@ -56,8 +61,8 @@ def get_user_by_id(db, user_id: str):
             return UserInDB(**user_data)
     return None
 
-def authenticate_user(fake_db,username:str,password:str):
-    user=get_user(fake_db,username)
+def authenticate_user(db:Session,username:str,password:str) -> UserInDB | None:
+    user=get_user_by_username(db,username)
     if not user:
         return False
     if not verrify_password(password,user.hashed_password):
@@ -72,6 +77,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
+# DEPENDENCIES
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
                            db:Session=Depends(get_db)):
     credentials_exception = HTTPException(
@@ -87,7 +94,7 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
         token_data = TokenData(username=user_id)  
     except InvalidTokenError:
         raise credentials_exception
-    user = get_user_by_id(fake_users_db, user_id)  
+    user = get_user_by_id(db, user_id)  
     if user is None:
         raise credentials_exception
     return user
@@ -121,7 +128,7 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
     db.refresh(user_in_db)
     
     return user_in_db
-@router.post("/auth/login", status_code=status.HTTP_201_CREATED, response_model=Token)  
+@router.post("/auth/login", status_code=status.HTTP_201_CREATED, response_model=Token,dependencies=[Depends(rate_limit(5, 60))])  
 async def login_for_access_token(
     response:Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -156,9 +163,15 @@ async def logout(response: Response):
     
 
 
-@router.post("/auth/refresh",status_code=status.HTTP_200_OK)
+@router.post("/auth/refresh", status_code=status.HTTP_200_OK)
+async def refresh_token(current_user: Annotated[UserDB, Depends(get_current_active_user)]):
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    new_token = create_access_token(
+        data={"sub": str(current_user.id)}, expires_delta=access_token_expires
+    )
+    return {"access_token": new_token, "token_type": "bearer"}
 
 
-@router.get("/users/me",response_model=User,status_code=status.HTTP_201_CREATED)
+@router.get("/users/me",response_model=User,status_code=status.HTTP_200_OK)
 async def read_user_me(current_user:Annotated[User,Depends(get_current_active_user)]):
     return current_user
