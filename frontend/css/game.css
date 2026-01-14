@@ -28,3 +28,8 @@ body{
     cursor: pointer;
 
 }
+
+.active-press {
+    transform: scale(0.95);
+    background-color: #ddd;
+}
