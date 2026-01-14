@@ -1,3 +1,5 @@
+from models import GameStatus
+
 def session_stats(games:list[dict]):
     finished=0
     wins=0
@@ -5,19 +7,19 @@ def session_stats(games:list[dict]):
     total_guesses=0
     total_wrong=0
     for g in games:
-        status=["status"]
-        if status == "WON" or status== "LOST":
+        status=g["status"]
+        if status == GameStatus.WON or status== GameStatus.LOST:
             finished+=1
-            total_guesses=g["total_guesses"]
-            total_wrong=len(g["total_wrong"])
-            if status=="WON":
+            total_guesses+=g["total_guesses"]
+            total_wrong+=len(g["wrong_letters"])
+            if status==GameStatus.WON:
                 wins+=1
             else:
                 losses+=1
     win_rate=0
     avg_guesses=0
     avg_wrong=0
-    if finished>=0:
+    if finished>0:
         win_rate=wins/finished
         avg_guesses=total_guesses/finished
         avg_wrong=total_wrong/finished

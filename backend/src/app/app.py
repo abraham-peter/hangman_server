@@ -1,38 +1,41 @@
 from fastapi import Depends, FastAPI
+from fastapi_limiter import FastAPILimiter
 from schemas.user import User,RegisterUser
-from middleware.auth import auth_backend, current_active_user, fastapi_users
 from routes.games import router as games_router
+import redis.asyncio as redis
 
 app = FastAPI()
 
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend), prefix="/auth/jwt", tags=["auth"]
-)
-app.include_router(
-    fastapi_users.get_register_router(User, RegisterUser),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_reset_password_router(),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_verify_router(User),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(User, RegisterUser),
-    prefix="/users",
-    tags=["users"],
-)
+redis_client:redis.Redis | None=None
+@app.on_event("startup")
+async def startup():
+    global redis_client
+
+    redis_client=redis.from_url(
+        "redis://localhost:6379",
+        encoding="utf-8",
+        decode_responses=True,
+    )
+    await FastAPILimiter.init(
+        redis_client,
+        key_prefix="hangman",
+    )
+@app.on_event("shutdown")
+async def shutdown():
+    if redis_client:
+        await redis_client.close()
+
+
+
+
+
 app.include_router(
     games_router,
     prefix="/game",
     tags=["game"]
 )
+
+    
 
 
 # @app.get("/authenticated-route")

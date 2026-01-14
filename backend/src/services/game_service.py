@@ -4,21 +4,23 @@ from models import Game
 from sqlalchemy.orm import Session 
 from models import Session as SessionModel
 from datetime import datetime,timezone
-from sqlalchemy.sql import func
-import uuid 
+from schemas.game import GameStatus 
+from schemas.session import SessionStatus
+from uuid import UUID
 
 def generate_uuid():
-    return str(uuid.uuid4())
+    return uuid.uuid4()
 
-def get_owned_game(db: Session, game_id: int, user_id: int) -> Game:
+def get_owned_game(db: Session, game_id: str, user_id: int) -> Game:
 #    """  
 #    Returneaza jocul daca apartine user-ului.
 #    Arunca HTTPException(404) daca nu exista / nu e al user-ului.
 #    """
+    game_uuid=UUID(game_id)
     game = ( 
         db.query(Game)
         .join(SessionModel, Game.session_id==SessionModel.session_id)
-        .filter(Game.game_id==game_id)
+        .filter(Game.game_id==game_uuid)
         .filter(SessionModel.user_id==user_id)
         .first()
     )
@@ -40,7 +42,7 @@ def apply_guess(game:Game,guess:str):
 #    Ridică ValueError dacă litera este invalidă sau deja ghicită.
 #    """
 
-    letter=letter.lower()
+    letter=guess.lower()
     # Validare Litera 
     if len(letter) != 1 or not letter.isalpha():
         raise ValueError("Provide only one alphabet letter.")
@@ -64,11 +66,11 @@ def apply_guess(game:Game,guess:str):
     game.pattern=new_pattern
     #Se intelege (Asta a zis Peter)
     if "*" not in new_pattern:
-        game.status="WON :o"
-        game.finished_at=datetime.now(timezone_utc)
+        game.status=GameStatus.WON
+        game.finished_at=datetime.now(timezone.utc)
     elif game.remaining_misses<=0:
-        game.status="LOST :(((("
-        game.finished_at=datetime.now(timezone_utc) 
+        game.status=GameStatus.LOST
+        game.finished_at=datetime.now(timezone.utc) 
     return game  
 
 
