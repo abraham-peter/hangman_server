@@ -115,6 +115,7 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
     hashed_password = get_hash_password(register.password)
     
     new_user = UserDB(
+        username=register.username,
         full_name=register.full_name,
         email=register.email,
         hashed_password=hashed_password,
