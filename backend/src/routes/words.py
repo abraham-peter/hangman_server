@@ -1,13 +1,12 @@
-from fastapi import APIRouter,status
+from fastapi import APIRouter,status, HTTPException, status
+from models import UserDB 
 
-router=APIRouter()
+def admin_required(user: UserDB):
+    if not user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN
+            detail="Asta este Admin Panel :("
+        )
 
-@router.get("/admin/dictionaries",status_code=status.HTTP_200_OK)
+router=APIRouter(prefix="/admin/dictionaries",tags=["Admin Dictionaries"])
 
-@router.post("/admin/dictionaries",status_code=status.HTTP_201_CREATED)
-
-@router.patch("/admin/dictionaries/{id}",status_code=status.HTTP_200_OK)
-
-@router.get("/admin/dictionaries/{id}/words",status_code=status.HTTP_200_OK)
-def something():
-    pass
