@@ -17,7 +17,6 @@ class TokenData(BaseModel):
     
 class UserInDB(User):#ce se passtreaza in db
     user_id:str
-    username: str
     email: str | None = None
     full_name: str | None = None
     disabled: bool | None = None
