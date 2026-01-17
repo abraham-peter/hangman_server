@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - FastAPI Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="single-column">
+    <div class="container admin-container">
+        <div class="admin-header">
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <img src="assets/fastapi-logo.svg" alt="Logo" style="height: 32px; width: auto;">
+                <h1 style="font-size: 1.25rem;">Dashboard</h1>
+            </div>
+            <div>
+                 <!-- Could put user avatar here -->
+            </div>
+        </div>
+
+        <div id="loading">Loading...</div>
+        
+        <div id="content" class="hidden">
+            <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Welcome, <span id="user-name">User</span>!</h2>
+            
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-label">Email Address</div>
+                    <div class="info-value" id="user-email"></div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-label">User ID</div>
+                    <div class="info-value" id="user-id" style="font-family: monospace; font-size: 0.875rem;"></div>
+                </div>
+                
+                <div class="info-card">
+                    <div class="info-label">Role</div>
+                    <div class="info-value">User</div> <!-- Placeholder -->
+                </div>
+            </div>
+            
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--border);">
+            
+            <h3 style="margin-bottom: 1rem;">Actions</h3>
+            <p style="color: var(--muted-foreground); margin-bottom: 1.5rem;">Manage your account settings.</p>
+            
+            <div style="display: flex; gap: 1rem;">
+                <!-- <button class="primary" style="width: auto;">Edit Profile</button> -->
+                <button onclick="logout()" class="destructive" style="width: auto; padding: 0 2rem;">Log Out</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="app.js"></script>
+    <script>
+        // Check if logged in immediately
+        if (!getToken()) {
+            window.location.href = 'login.html';
+        }
+
+        async function loadProfile() {
+            try {
+                // Endpoint GET /users/me
+                const user = await apiRequest('/users/me', 'GET', null, true);
+                
+                document.getElementById('user-name').textContent = user.full_name || 'User';
+                document.getElementById('user-email').textContent = user.email;
+                document.getElementById('user-id').textContent = user.id;
+                
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+                
+            } catch (err) {
+                console.error(err);
+                // Redirect happens in apiRequest if 401
+            }
+        }
+
+        function logout() {
+            removeToken();
+            window.location.href = 'index.html';
+        }
+
+        loadProfile();
+    </script> -->
+</body>
+</html>

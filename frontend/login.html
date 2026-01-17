@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - FastAPI Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-layout">
+        <div class="auth-left">
+            <img src="assets/fastapi-logo.svg" alt="FastAPI Logo">
+        </div>
+        <div class="auth-right">
+            <div class="container">
+                <div class="auth-header">
+                    <h1>Login to your account</h1>
+                </div>
+                <form id="login-form">
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="user@example.com" required>
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••••" required>
+                    </div>
+                    <div id="error" class="error hidden"></div>
+                    <button type="submit" class="primary">Log in</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--muted-foreground);">
+                    Don't have an account yet? <a href="signup.html" class="link" style="display: inline; margin: 0;">Sign up</a>
+                </p>
+            </div>
+            <div class="auth-footer">
+                <span class="auth-footer-text">FastAPI Template - 2025</span>
+                <a href="https://github.com/fastapi/full-stack-fastapi-template" target="_blank" title="GitHub">
+                    <img src="assets/git_img.svg" alt="GitHub" style="width: 20px; height: 20px;">
+                </a>
+                <a href="https://twitter.com/fastapi" target="_blank" title="Twitter">
+                    <img src="assets/X_img.png" alt="Twitter" style="width: 20px; height: 20px;">
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+                    <img src="assets/linkedin.png" alt="LinkedIn" style="width: 20px; height: 20px;">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
+            
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+            
+            try {
+                const data = await apiRequest('/login/access-token', 'POST', {
+                    username: email,
+                    password: password
+                });
+                
+                setToken(data.access_token);
+                window.location.href = 'admin.html';
+                
+            } catch (err) {
+                errorDiv.textContent = err.message || 'Login failed';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

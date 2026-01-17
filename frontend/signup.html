@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - FastAPI Project</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="auth-layout">
+        <div class="auth-left">
+            <img src="assets/fastapi-logo.svg" alt="FastAPI Logo">
+        </div>
+        <div class="auth-right">
+            <div class="container">
+                <div class="auth-header">
+                    <h1>Create an account</h1>
+                </div>
+                <form id="signup-form">
+                    <div>
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" placeholder="John Doe">
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="user@example.com" required>
+                    </div>
+                    <div>
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••••" required pattern=".{8,}" title="8 characters minimum">
+                    </div>
+                    <div>
+                        <label for="confirm_password">Confirm Password</label>
+                        <input type="password" id="confirm_password" placeholder="••••••••••" required>
+                    </div>
+                    <div id="error" class="error hidden"></div>
+                    <button type="submit" class="primary">Sign up</button>
+                </form>
+                <p style="text-align: center; margin-top: 1rem; font-size: 0.875rem; color: var(--muted-foreground);">
+                    Already have an account? <a href="login.html" class="link" style="display: inline; margin: 0;">Log in</a>
+                </p>
+            </div>
+            <div class="auth-footer">
+                <span class="auth-footer-text">FastAPI Template - 2025</span>
+                <a href="https://github.com/fastapi/full-stack-fastapi-template" target="_blank" title="GitHub">
+                    <img src="assets/git_img.svg" alt="GitHub" style="width: 20px; height: 20px;">
+                </a>
+                <a href="https://twitter.com/fastapi" target="_blank" title="Twitter">
+                    <img src="assets/X_img.png" alt="Twitter" style="width: 20px; height: 20px;">
+                </a>
+                <a href="https://www.linkedin.com" target="_blank" title="LinkedIn">
+                    <img src="assets/linkedin.png" alt="LinkedIn" style="width: 20px; height: 20px;">
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fullName = document.getElementById('full_name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
+            const errorDiv = document.getElementById('error');
+            
+            errorDiv.classList.add('hidden');
+            errorDiv.textContent = '';
+            
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            try {
+                await apiRequest('/users/signup', 'POST', {
+                    email: email,
+                    password: password,
+                    full_name: fullName
+                });
+                
+                alert('Account created successfully! Please log in.');
+                window.location.href = 'login.html';
+                
+            } catch (err) {
+                errorDiv.textContent = err.message || 'Signup failed';
+                errorDiv.classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
