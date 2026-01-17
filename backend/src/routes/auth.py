@@ -15,6 +15,9 @@ from services.auth_service import get_user_by_id,get_user_by_username
 from sqlalchemy.orm import Session
 from database import get_db
 from middleware.rate_limit import rate_limit
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
     async def __call__(self, request: Request) -> str | None:
@@ -32,14 +35,10 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
                 return None
         return param
 
-# to get a string like this run:
-# openssl rand -hex 32
-# -------------------------------------- 
-# Config 
-# -------------------------------------
-SECRET_KEY="739b2d9c01de56d80cec148f3b1bd7c37959b83fa122bb07b7ab284d1500f751"
-ALGORITHM="HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+SECRET_KEY=os.getenv("SECRET_KEY")
+ALGORITHM=os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES=os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
 
 router=APIRouter()
 password_hash = PasswordHash.recommended()

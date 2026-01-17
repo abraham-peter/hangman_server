@@ -2,8 +2,11 @@ from fastapi import Request
 from fastapi_limiter.depends import RateLimiter
 from fastapi.security.utils import get_authorization_scheme_param
 import jwt
-from routes.auth import SECRET_KEY,ALGORITHM
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
+SECRET_KEY=os.getenv("SECRET_KEY")
+ALGORITHM=os.getenv("ALGORITHM")
 async def rate_limit_key(request:Request)->str | None:
     token=request.cookies.get("access_token")
 

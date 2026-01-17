@@ -7,6 +7,7 @@ from enum import Enum
 from sqlalchemy import Enum as SAENum 
 from schemas.session import SessionStatus
 from schemas.game import GameStatus
+import uuid
 
 def generate_uuid():
     return uuid.uuid4()
@@ -29,7 +30,7 @@ class Session(Base):
     session_id=Column(UUID(as_uuid=True),primary_key=True,default=generate_uuid)
     user_id=Column(Integer,ForeignKey("users.user_id"),nullable=False)
 
-    dictionary_id=Column(Integer,ForeignKey("dictionaries.id"),Nullable=True)
+    dictionary_id=Column(Integer,ForeignKey("dictionaries.id"),nullable=True)
     dictionary=relationship("DictionaryDB")
 
     num_games=Column(Integer,nullable=False)
