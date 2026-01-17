@@ -1,4 +1,4 @@
-from fastapi import APIRouter,HTTPException,Depends,status
+from fastapi import APIRouter,HTTPException,Depends,status,Query
 from routes.auth import get_current_active_user
 from schemas.user import User
 from schemas.session import SessionResponse, SessionCreate, SessionStatus
