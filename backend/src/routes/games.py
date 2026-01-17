@@ -28,14 +28,27 @@ async def create_game(
     db: Session = Depends(get_db)
 ):
     session_uuid=UUID(session_id)
+    session=db.query(SessionModel).filter(SessionModel.session_id==session_uuid).first()
+    if not session or session.user_id != current_user.user_id:
+        raise HTTPException(status_code=404, detail="Session not found or not owned by user")
+    
+    # Extragerea cuvantului se-ntampla:
+    if not session.dictionary_id:
+        raise HTTPException(status_code=400, detail="No dictionary assigned to session")
+    
+    words_sample=get_dictionary_sample(db,session.dictionary_id,sample=1000)
+    if not words_sample:
+        raise HTTPException(status_code=400, detail="Dictionary is empty")
+    word=random.choice(words_sample).value
     new_game = GameModel(
-        session_id=session_uuid,
+        session_id=session.session_id,
         word=word, 
         pattern="*"*len(word),
         guessed_letters=[],
         wrong_letters=[],
-        remaining_misses=6,
+        remaining_misses=session.max_misses,
         status=GameStatus.IN_PROGRESS
+        history=[]
     )
     db.add(new_game)
     db.commit()
@@ -96,4 +109,4 @@ async def abort_game(
     game.status = GameStatus.ABORTED
     db.commit()
     db.refresh(game)
-    return {"game_id": str(game.game_id), "status": game.status.value, "message": "Game aborted with success"}
+    return {"game_id": game.game_id, "status": game.status, "message": "Game aborted with success"}
