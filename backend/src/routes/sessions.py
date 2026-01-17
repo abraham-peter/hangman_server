@@ -40,7 +40,7 @@ async def create_session(session_data: SessionCreate,  # aici pui schema Pydanti
     db.refresh(new_session)
     return new_session
 
-# GET /sessions/{sesion_id} -> DETALII SESIUNE
+# GET /sessions/{session_id} -> DETALII SESIUNE
 @router.get("/{session_id}", response_model=SessionResponse)
 async def get_session(
     session_id: str,
