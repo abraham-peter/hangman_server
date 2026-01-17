@@ -8,5 +8,3 @@ def get_user_by_username(db:Session,username:str):
 def get_user_by_id(db:Session,user_id:str):
     return db.query(UserDB).filter(UserDB.id== user_id).first()
 
-def generate_uuid():
-    return uuid.uuid4()

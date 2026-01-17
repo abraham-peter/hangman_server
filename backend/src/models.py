@@ -5,11 +5,12 @@ from sqlalchemy.sql import func
 from database import Base
 from enum import Enum
 from sqlalchemy import Enum as SAENum 
-from services.auth_service import generate_uuid
 from schemas.session import SessionStatus
 from schemas.game import GameStatus
 import uuid 
 
+def generate_uuid():
+    return uuid.uuid4()
 class UserDB(Base):
     __tablename__="users"
 
