@@ -4,13 +4,15 @@ from typing import Annotated
 from schemas.user import User
 from routes.auth import get_current_active_user
 from schemas.session import GuessRequest
-from schemas.game import GameOutput
+from schemas.game import GameOutput, GameStatus
 from services.game_service import apply_guess, get_owned_game
 from database import get_db
-from models import Game as GameModel
+from models import Game as GameModel, Session as SessionModel, WordDB
 from schemas.game import GameStatus
 from middleware.rate_limit import RateLimiter
+from services.word_service import get_dictionary_sample
 from uuid import UUID
+import random
 
 router = APIRouter(
     prefix="/sessions/{session_id}/games",
@@ -26,10 +28,8 @@ async def create_game(
     db: Session = Depends(get_db)
 ):
     session_uuid=UUID(session_id)
-    existing_game = db.query(GameModel).filter(GameModel.session_id==session_uuid).first()
-    word="Ada"
     new_game = GameModel(
-        session_id=session_id,
+        session_id=session_uuid,
         word=word, 
         pattern="*"*len(word),
         guessed_letters=[],
@@ -96,4 +96,4 @@ async def abort_game(
     game.status = GameStatus.ABORTED
     db.commit()
     db.refresh(game)
-    return {"game_id": game.game_id, "status": game.status, "message": "Game aborted with success"}
+    return {"game_id": str(game.game_id), "status": game.status.value, "message": "Game aborted with success"}

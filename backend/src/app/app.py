@@ -1,5 +1,6 @@
 from fastapi import Depends, FastAPI
 from fastapi_limiter import FastAPILimiter
+from fastapi.middleware.cors import CORSMiddleware
 from routes.sessions import router as sessions_router
 from routes.games import router as games_router
 from routes.health import router as health_router
@@ -7,6 +8,21 @@ from routes.health import router as health_router
 import redis.asyncio as redis
 
 app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com/",
+    "https://localhost.tiangolo.com/",
+    "http://localhost/",
+    "http://localhost:3000/",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=[""],
+    allow_headers=[""],
+)
 
 redis_client:redis.Redis | None=None
 @app.on_event("startup")

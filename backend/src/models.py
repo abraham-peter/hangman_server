@@ -7,7 +7,6 @@ from enum import Enum
 from sqlalchemy import Enum as SAENum 
 from schemas.session import SessionStatus
 from schemas.game import GameStatus
-import uuid 
 
 def generate_uuid():
     return uuid.uuid4()
@@ -29,6 +28,10 @@ class Session(Base):
 
     session_id=Column(UUID(as_uuid=True),primary_key=True,default=generate_uuid)
     user_id=Column(Integer,ForeignKey("users.user_id"),nullable=False)
+
+    dictionary_id=Column(Integer,ForeignKey("dictionaries.id"),Nullable=True)
+    dictionary=relationship("DictionaryDB")
+
     num_games=Column(Integer,nullable=False)
     params=Column(JSON,nullable=True) # dictionary_id, difficulty, language, max_misses, allow_word_guess, seed # SE POATE IGNORA.
     status=Column(SAENum(SessionStatus,name="session_status"),default=SessionStatus.ACTIVE,nullable=False)
@@ -63,15 +66,15 @@ class DictionaryDB(Base):
     id=Column(Integer,primary_key=True, index=True,nullable=False)
     language=Column(String,index=True,nullable=False) # Aici vine daca-i ro / en
     label=Column(String,nullable=True)
-    is_active=Column(Boolean,default=False)
+    is_active=Column(Boolean,default=False,nullable=False)
 
-    words=relationship("WordDB",back_populates=dictionary)
+    words=relationship("WordDB",back_populates="dictionary",cascade="all, delete-orphan")
 
 class WordDB(Base):
     __tablename__="words"
 
     id=Column(Integer,primary_key=True,index=True)
     value=Column(String,index=True)
-    dictionary_id=Column(Integer,ForeignKey("dictionaries.id"))
+    dictionary_id=Column(Integer,ForeignKey("dictionaries.id"),nullable=False)
 
     dictionary=relationship("DictionaryDB",back_populates="words")
