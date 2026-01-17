@@ -1,7 +1,11 @@
 from fastapi import Depends, FastAPI
 from fastapi_limiter import FastAPILimiter
 from schemas.user import User,RegisterUser
+from routes.auth import router as auth_router
+from routes.sessions import router as sessions_router
 from routes.games import router as games_router
+from routes.health import router as health_router
+
 import redis.asyncio as redis
 
 app = FastAPI()
@@ -25,25 +29,26 @@ async def shutdown():
     if redis_client:
         await redis_client.close()
 
+app.include_router(
+    auth_router,
+    prefix="/auth",
+    tags=["auth"]
+)
 
-
-
+app.include_router(
+    sessions_router,
+    prefix="/sessions",
+    tags=["sessions"],
+)
 
 app.include_router(
     games_router,
     prefix="/game",
-    tags=["game"]
+    tags=["game"],
+)
+app.include_router(
+    health_router,
+    prefix="/health",
+    tags=["health"],
 )
 
-    
-
-
-# @app.get("/authenticated-route")
-# async def authenticated_route(user: User = Depends(current_active_user)):
-#     return {"message": f"Hello {user.email}!"}
-
-
-# @app.on_event("startup")
-# async def on_startup():
-#     # Not needed if you setup a migration system like Alembic
-#     await create_db_and_tables()
