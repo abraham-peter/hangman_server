@@ -2,10 +2,10 @@ from sqlalchemy import Column,Integer,String,Boolean,DateTime,ForeignKey,JSON
 from sqlalchemy.orm import relationship 
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
-from src.database import Base
+from database import Base
 from enum import Enum
 from sqlalchemy import Enum as SAENum 
-from services.game_service import generate_uuid
+from services.auth_service import generate_uuid
 from schemas.session import SessionStatus
 from schemas.game import GameStatus
 import uuid 

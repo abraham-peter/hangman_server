@@ -6,10 +6,8 @@ from models import Session as SessionModel
 from datetime import datetime,timezone
 from schemas.game import GameStatus 
 from schemas.session import SessionStatus
+import uuid
 from uuid import UUID
-
-def generate_uuid():
-    return uuid.uuid4()
 
 def get_owned_game(db: Session, game_id: str, user_id: int) -> Game:
 #    """  
