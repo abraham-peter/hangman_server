@@ -1,7 +1,5 @@
 from fastapi import Depends, FastAPI
 from fastapi_limiter import FastAPILimiter
-from schemas.user import User,RegisterUser
-from routes.auth import router as auth_router
 from routes.sessions import router as sessions_router
 from routes.games import router as games_router
 from routes.health import router as health_router
@@ -29,11 +27,6 @@ async def shutdown():
     if redis_client:
         await redis_client.close()
 
-app.include_router(
-    auth_router,
-    prefix="/auth",
-    tags=["auth"]
-)
 
 app.include_router(
     sessions_router,

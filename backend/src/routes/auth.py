@@ -1,13 +1,13 @@
 from datetime import datetime, timedelta, timezone
 import jwt
-from uuid import uuid
+import uuid
 from jwt.exceptions import InvalidTokenError
 from fastapi import APIRouter,status,Depends,HTTPException
 from typing import Annotated
 from fastapi import Response, Depends
 from pwdlib import PasswordHash
 from schemas.user import User,UserInDB,Token,TokenData,RegisterUser
-from models import UserDB
+from src.models import UserDB
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
 from fastapi.security.utils import get_authorization_scheme_param
 from starlette.requests import Request
