@@ -105,7 +105,7 @@ async def session_stats(
     avg_guesses = sum(g.total_guesses for g in games)/total if total else 0
     avg_wrong = sum(len(g.wrong_letters) for g in games)/total if total else 0
     return {
-        "session_id": session_id,
+        "session_id": str(session.session_id),
         "games_total": total,
         "games_finished": finished,
         "wins": wins,

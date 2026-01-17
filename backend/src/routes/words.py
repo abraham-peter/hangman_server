@@ -10,7 +10,7 @@ from auth import get_current_active_user
 def admin_required(user: UserDB):
     if not user.is_admin:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="Asta este Admin Panel :("
         )
 
@@ -44,7 +44,7 @@ def dictionary_sample(
     dictionary_id: int,
     sample: int=20,
     current_user= Annotated[UserDB,Depends(get_current_active_user)],
-    db:Session=depends(get_db)
+    db:Session=Depends(get_db)
 ):
     admin_required(current_user)
     words=get_dictionary_sample(db,dictionary_id,sample)
