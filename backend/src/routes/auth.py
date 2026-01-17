@@ -114,18 +114,17 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
 
     hashed_password = get_hash_password(register.password)
     
-    user_in_db = UserDB( 
-        username=register.username,
+    new_user = UserDB(
         full_name=register.full_name,
         email=register.email,
         hashed_password=hashed_password,
         is_active=True,
     )
-    db.add(user_in_db)
+    db.add(new_user)
     db.commit()
-    db.refresh(user_in_db)
+    db.refresh(new_user)
+    return new_user
     
-    return user_in_db
 @router.post("/auth/login", status_code=status.HTTP_201_CREATED, response_model=Token,dependencies=[Depends(rate_limit(5, 60))])  
 async def login_for_access_token(
     response:Response,
@@ -147,7 +146,7 @@ async def login_for_access_token(
         key="access_token",
         value=f"Bearer {access_token}",
         httponly=True,
-        max_age=ACCESS_TOKEN_EXPIRE_MINUTES*60,
+        max_age=ACCESS_TOKEN_EXPIRE_MINUTES*60, 
         samesite="lax",
         secure=True,
 
