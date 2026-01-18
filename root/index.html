@@ -30,8 +30,13 @@
     (async function(){
         try {
             const user = await getCurrentUser();
-            document.getElementById('auth-buttons').classList.add('hidden');
-            document.getElementById('dashboard-link').classList.remove('hidden');
+            // Check admin access by attempting to call an admin endpoint
+            try {
+                await apiRequest('/admin/dictionaries');
+                window.location.href = 'admin.html';
+            } catch (e) {
+                window.location.href = 'game_menu.html';
+            }
         } catch (err) {
             // Not authenticated — leave sign up / login visible
         }

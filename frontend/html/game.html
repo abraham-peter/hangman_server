@@ -5,8 +5,13 @@
     </head>
     <body>
         <div>
-            <h2>Hints(example no repeating letters)</h2>
-            <h1>Patterned letters</h1>
+            <h2>Hints (example no repeating letters)</h2>
+            <h1 id="word-pattern">_ _ _ _</h1>
+            <div id="game-info" style="margin-top:0.5rem;">
+                <div id="remaining-misses">Remaining misses: <span id="misses-count">-</span></div>
+                <div id="wrong-letters">Wrong letters: <span id="wrong-list">-</span></div>
+                <div id="game-message" style="margin-top:0.5rem; font-weight:600"></div>
+            </div>
         </div>
         <div class="container">
             
@@ -43,5 +48,7 @@
             </div>
 
         </div>
+    <script src="/frontend/js/app.js"></script>
+    <script src="/frontend/js/game.js"></script>
     </body>
 </html>

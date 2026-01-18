@@ -40,14 +40,18 @@ async def create_game(
     if not words_sample:
         raise HTTPException(status_code=400, detail="Dictionary is empty")
     word=random.choice(words_sample).value
+    # reveal one random letter as a hint and mark it as already guessed
+    reveal_index = random.randrange(len(word))
+    reveal_letter = word[reveal_index].lower()
+    pattern = "".join([c if c.lower() == reveal_letter else "*" for c in word])
     new_game = GameModel(
         session_id=session.session_id,
-        word=word, 
-        pattern="*"*len(word),
-        guessed_letters=[],
+        word=word,
+        pattern=pattern,
+        guessed_letters=[reveal_letter],
         wrong_letters=[],
         remaining_misses=session.max_misses,
-        status=GameStatus.IN_PROGRESS
+        status=GameStatus.IN_PROGRESS,
         history=[]
     )
     db.add(new_game)
