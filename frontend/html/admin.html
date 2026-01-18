@@ -100,6 +100,9 @@
 
     <script src="../js/app.js"></script>
     <script>
+    // Toggle this flag to true to bypass authentication redirect for development/testing.
+    const IGNORE_AUTH = true; // set to false to restore normal redirect behaviour
+
     (async function(){
         try {
             const user = await getCurrentUser();
@@ -119,8 +122,23 @@
             loadUserHistory(user.user_id);
 
         } catch (err) {
-            // Not authenticated — go to login
-            window.location.href = 'login.html';
+            // Not authenticated — either redirect or show page as Guest depending on IGNORE_AUTH
+            if (!IGNORE_AUTH) {
+                window.location.href = 'login.html';
+            } else {
+                // Show guest view so admin frontend is visible for development/testing
+                document.getElementById('user-name').textContent = 'Guest';
+                document.getElementById('user-email').textContent = 'guest@example.local';
+                document.getElementById('user-id').textContent = 'guest';
+                document.getElementById('user-role').textContent = 'Guest';
+
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+
+                // Attempt to load leaderboard (may still require auth depending on backend)
+                try { await loadLeaderboard(); } catch (e) { console.warn('Leaderboard load failed', e); }
+                // Skip loading personal history since there is no real user id
+            }
         }
 
         const apiLogout = window.logout;
