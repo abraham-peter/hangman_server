@@ -8,10 +8,10 @@ from services.game_service import apply_guess, get_owned_game
 from typing import Annotated
 from uuid import UUID
 from datetime import datetime,timezone
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session as DBSession
 from database import get_db
 from models import Game
-from models import Session,Game,GameStatus
+from models import Session as SessionModel,Game,GameStatus
 from middleware.rate_limit import RateLimiter
 
 router = APIRouter(
@@ -19,12 +19,30 @@ router = APIRouter(
     tags=["sessions"],
     dependencies=[Depends(RateLimiter(times=10, seconds=60))]
 )
+
+# GET /sessions -> Obtine toate sesiunile utilizatorului curent
+@router.get("", response_model=list[SessionResponse])
+async def get_user_sessions(
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: DBSession = Depends(get_db),
+    user_id: int | None = Query(default=None)
+):
+    # Dacă user_id este specificat, verificăm dacă este același cu current_user
+    # (sau dacă current_user este admin, poate vedea sesiunile altora)
+    target_user_id = user_id if user_id else current_user.user_id
+    
+    if target_user_id != current_user.user_id and not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="Access denied")
+    
+    sessions = db.query(SessionModel).filter(SessionModel.user_id == target_user_id).all()
+    return sessions
+
 # POST /sessions -> Creeaza sesiune noua
 @router.post("", response_model=SessionResponse, status_code=status.HTTP_201_CREATED)
 async def create_session(session_data: SessionCreate,  # aici pui schema Pydantic pentru request
                          current_user: Annotated[User, Depends(get_current_active_user)],
-                         db: Session = Depends(get_db)):
-    new_session= Session(
+                         db: DBSession = Depends(get_db)):
+    new_session= SessionModel(
         user_id=current_user.user_id,
         num_games=session_data.num_games,
         dictionary_id=session_data.dictionary_id,
@@ -45,10 +63,10 @@ async def create_session(session_data: SessionCreate,  # aici pui schema Pydanti
 async def get_session(
     session_id: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db),
+    db: DBSession = Depends(get_db),
 ):
     session_uuid=UUID(session_id)
-    session = db.query(Session).filter_by(session_id=session_uuid).first()
+    session = db.query(SessionModel).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail= "Session not found or not owned by user")
     return session
@@ -58,10 +76,10 @@ async def get_session(
 async def abort_session(
     session_id: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: DBSession = Depends(get_db)
 ):
     session_uuid=UUID(session_id)
-    session=db.query(Session).filter_by(session_id=session_uuid).first()
+    session=db.query(SessionModel).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
     if session.status != SessionStatus.ACTIVE:
@@ -77,10 +95,10 @@ async def abort_session(
 async def list_games(
     session_id: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: DBSession = Depends(get_db)
 ):
     session_uuid=UUID(session_id)
-    session = db.query(Session).filter_by(session_id=session_uuid).first()
+    session = db.query(SessionModel).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
     games = db.query(Game).filter_by(session_id=session_uuid).all()
@@ -91,10 +109,10 @@ async def list_games(
 async def session_stats(
     session_id: str,
     current_user: Annotated[User, Depends(get_current_active_user)],
-    db: Session = Depends(get_db)
+    db: DBSession = Depends(get_db)
 ):
     session_uuid=UUID(session_id)
-    session = db.query(Session).filter_by(session_id=session_uuid).first()
+    session = db.query(SessionModel).filter_by(session_id=session_uuid).first()
     if not session or session.user_id != current_user.user_id:
         raise HTTPException(status_code=404, detail="Session not found or not owned by user")
     games = db.query(Game).filter_by(session_id=session_uuid).all()

@@ -60,8 +60,15 @@
 
         try {
             await login(email, password);
-            // Server sets an httponly cookie; redirect to the app home
-            window.location.href = 'index.html';
+            // After successful login, get user info to check if admin
+            const user = await getCurrentUser();
+            
+            // Redirect based on user role
+            if (user.is_admin) {
+                window.location.href = 'admin.html';
+            } else {
+                window.location.href = 'game_menu.html';
+            }
         } catch (err) {
             errorDiv.textContent = err.message || 'Login failed';
             errorDiv.classList.remove('hidden');

@@ -34,6 +34,16 @@
                         <label for="confirm_password">Confirm Password</label>
                         <input type="password" id="confirm_password" placeholder="••••••••••" required>
                     </div>
+                    <div style="margin: 1rem 0;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="is_admin_checkbox" style="width: auto;">
+                            <span>Register as Admin</span>
+                        </label>
+                    </div>
+                    <div id="admin_password_field" style="display: none;">
+                        <label for="admin_password">Admin Password</label>
+                        <input type="password" id="admin_password" placeholder="Enter admin password">
+                    </div>
                     <div id="error" class="error hidden"></div>
                     <button type="submit" class="primary">Sign up</button>
                 </form>
@@ -58,12 +68,25 @@
 
     <script src="app.js"></script>
     <script>
+    // Toggle admin password field
+    document.getElementById('is_admin_checkbox').addEventListener('change', function() {
+        const adminField = document.getElementById('admin_password_field');
+        if (this.checked) {
+            adminField.style.display = 'block';
+        } else {
+            adminField.style.display = 'none';
+            document.getElementById('admin_password').value = '';
+        }
+    });
+
     document.getElementById('signup-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const fullName = document.getElementById('full_name').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const confirmPassword = document.getElementById('confirm_password').value;
+        const isAdminChecked = document.getElementById('is_admin_checkbox').checked;
+        const adminPassword = document.getElementById('admin_password').value;
         const errorDiv = document.getElementById('error');
 
         errorDiv.classList.add('hidden');
@@ -75,8 +98,25 @@
             return;
         }
 
+        if (isAdminChecked && !adminPassword) {
+            errorDiv.textContent = 'Please enter the admin password';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+
         try {
-            await register({ email, password, full_name: fullName });
+            const registerData = { 
+                email, 
+                password, 
+                full_name: fullName 
+            };
+            
+            // Add admin_password only if checkbox is checked
+            if (isAdminChecked && adminPassword) {
+                registerData.admin_password = adminPassword;
+            }
+
+            await register(registerData);
             alert('Account created successfully! Please log in.');
             window.location.href = 'login.html';
         } catch (err) {

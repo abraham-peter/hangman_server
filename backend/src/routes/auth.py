@@ -121,6 +121,14 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
     if db_user:
         raise HTTPException(status_code=400,detail="Username already exists")
     
+    # Verificăm dacă utilizatorul vrea să fie admin
+    is_admin = False
+    if register.admin_password:
+        admin_pwd = os.getenv("ADMIN_PASSWORD", "admin")
+        if register.admin_password == admin_pwd:
+            is_admin = True
+        else:
+            raise HTTPException(status_code=403, detail="Invalid admin password")
 
     hashed_password = get_hash_password(register.password)
     
@@ -130,6 +138,7 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
         email=register.email,
         hashed_password=hashed_password,
         is_active=True,
+        is_admin=is_admin,
     )
     db.add(new_user)
     db.commit()
@@ -151,7 +160,7 @@ async def login_for_access_token(
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": str(user.id)}, expires_delta=access_token_expires  
+        data={"sub": str(user.user_id)}, expires_delta=access_token_expires  
     )
     response.set_cookie(
         key="access_token",
@@ -175,7 +184,7 @@ async def logout(response: Response):
 async def refresh_token(current_user: Annotated[UserDB, Depends(get_current_active_user)]):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     new_token = create_access_token(
-        data={"sub": str(current_user.id)}, expires_delta=access_token_expires
+        data={"sub": str(current_user.user_id)}, expires_delta=access_token_expires
     )
     return {"access_token": new_token, "token_type": "bearer"}
 

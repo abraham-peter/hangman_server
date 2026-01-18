@@ -57,9 +57,19 @@ async function getCurrentUser() {
   return apiRequest('/users/me', 'GET', null);
 }
 
+async function getLeaderboard(limit = 10) {
+  return apiRequest(`/stats/leaderboard?limit=${limit}`, 'GET', null);
+}
+
+async function getUserStats(userId, period = 'all') {
+  return apiRequest(`/stats/users/${userId}?period=${period}`, 'GET', null);
+}
+
 // Export to window so inline scripts can use them
 window.apiRequest = apiRequest;
 window.register = register;
 window.login = login;
 window.logout = logout;
 window.getCurrentUser = getCurrentUser;
+window.getLeaderboard = getLeaderboard;
+window.getUserStats = getUserStats;
