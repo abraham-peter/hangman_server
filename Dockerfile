@@ -15,4 +15,5 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONPATH=/app/backend/src
 
 # Use shell form so environment variables like $PORT are expanded at runtime
-CMD ["gunicorn","-w","4","-k","uvicorn.workers.UvicornWorker","app.app:app","--bind","0.0.0.0:$PORT"]
+# fall back to 8000 when PORT is not set
+CMD gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.app:app --bind 0.0.0.0:${PORT:-8000}
