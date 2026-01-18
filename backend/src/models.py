@@ -62,6 +62,18 @@ class Game(Base):
 
     session= relationship("Session",back_populates="games")
 
+    @property
+    def length(self):
+        """Return length of the underlying word."""
+        return len(self.word) if self.word else 0
+
+    @property
+    def revealed_word(self):
+        """Reveal the full word only when the game is finished."""
+        if self.status != GameStatus.IN_PROGRESS:
+            return self.word
+        return None
+
 class DictionaryDB(Base):
     __tablename__ = "dictionaries"
     

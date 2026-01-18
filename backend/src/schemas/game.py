@@ -6,6 +6,8 @@ class GameOutput(BaseModel):
     game_id: str
     session_id: str
     pattern: str
+    length: int
+    revealed_word: Optional[str] = None
     guessed_letters: list[str]
     wrong_letters: list[str]
     remaining_misses: int
