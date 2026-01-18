@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: hangman-server
+    env: docker
+    branch: main
+    dockerfilePath: Dockerfile
+    plan: free
+    buildCommand: ""
+    startCommand: ""

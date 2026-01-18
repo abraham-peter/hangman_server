@@ -7,40 +7,39 @@ from routes.health import router as health_router
 from routes.auth import router as auth_router
 import redis.asyncio as redis
 
+import os
+
 app = FastAPI()
 
-origins = [
-    "http://localhost.tiangolo.com/",
-    "https://localhost.tiangolo.com/",
-    "http://localhost/",
-    "http://localhost:3000/",
-]
+# Allow all origins by default for initial deployment (change in production)
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=[""],
-    allow_headers=[""],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# redis_client:redis.Redis | None=None
-# @app.on_event("startup")
-# async def startup():
-#     global redis_client
+redis_client: redis.Redis | None = None
 
-#     redis_client=redis.from_url(
-#         "redis://localhost:6379",
-#         encoding="utf-8",
-#         decode_responses=True,
-#     )
-#     await FastAPILimiter.init(
-#         redis_client,
-#     )
-# @app.on_event("shutdown")
-# async def shutdown():
-#     if redis_client:
-#         await redis_client.close()
+@app.on_event("startup")
+async def startup():
+    global redis_client
+    redis_url = os.getenv("REDIS_URL")
+    if redis_url:
+        redis_client = redis.from_url(
+            redis_url,
+            encoding="utf-8",
+            decode_responses=True,
+        )
+        await FastAPILimiter.init(redis_client)
+
+@app.on_event("shutdown")
+async def shutdown():
+    if redis_client:
+        await redis_client.close()
 
 app.include_router(
     auth_router,
