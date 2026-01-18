@@ -13,4 +13,5 @@ EXPOSE 8000
 ENV PORT 8000
 ENV PYTHONUNBUFFERED=1
 
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.app:app", "--bind", "0.0.0.0:$PORT"]
+# Use shell form so environment variables like $PORT are expanded at runtime
+CMD gunicorn -w 4 -k uvicorn.workers.UvicornWorker app.app:app --bind 0.0.0.0:$PORT
