@@ -60,6 +60,7 @@ body{
     background: rgba(255,255,255,0.9);
     border-radius: 3px;
     pointer-events: none;
+    z-index: 0; /* ensure pseudo-element sits behind button text */
 }  
 .button_bg .small-btn{
     display: inline-block;
@@ -81,6 +82,8 @@ body{
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    position: relative; /* place above pseudo-element */
+    z-index: 2;
 } 
 .button_bg .small-btn:hover{
     transform: scale(1.04);
@@ -128,20 +131,33 @@ body{
     box-sizing: border-box;
 }
 
-/* ensure anchor has no underline inside the login bg */
-.login_button_bg a{ text-decoration: none; }
+/* ensure anchor fills the entire background area so the button can center and be clickable */
+.login_button_bg a{ 
+    text-decoration: none; 
+    display: flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
 
 /* Specific styling to keep the login text on one line and fit the button */
 .login_button_bg .small-btn{
-    font-size: 0.95rem; /* slightly smaller for a single-line fit */
-    letter-spacing: 0.12rem;
+    font-size: 1.1rem; /* balanced size */
+    letter-spacing: 0.1rem;
     white-space: nowrap; /* prevent line breaks */
     text-transform: none; /* keep 'Sign In' capitalization */
-    padding: 0 0.6rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    cursor: pointer;
+    font-family: 'Press Start 2P', cursive;
+    color: #fff;
+    text-shadow: 0 2px 0 rgba(0,0,0,0.5);
     background: transparent;
     border: none;
+    width: auto; /* let it take natural text width */
+    height: auto;
+    line-height: normal; /* CRITICAL: override the calc(100% - 20px) from .button_bg .small-btn */
+    position: relative;
+    z-index: 5; /* ensure it stays on top of any background overlays */
 }
 
 /* responsive tweak for small screens */

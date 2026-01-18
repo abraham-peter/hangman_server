@@ -2,6 +2,14 @@
 console.log('main.js loaded');
 // You can add menu interactivity here (sounds, help popup, etc.)
 
+// Fix for browser back button cache issue - force page refresh
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    // Page was loaded from cache (bfcache)
+    window.location.reload();
+  }
+});
+
 function closeWindow() {
   // Attempt to close the window. Note: most browsers only allow closing windows opened by script.
   window.close();
