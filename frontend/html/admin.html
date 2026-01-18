@@ -52,37 +52,29 @@
         </div>
     </div>
 
-    <!-- <script src="app.js"></script>
+    <script src="app.js"></script>
     <script>
-        // Check if logged in immediately
-        if (!getToken()) {
+    (async function(){
+        try {
+            const user = await getCurrentUser();
+
+            document.getElementById('user-name').textContent = user.full_name || 'User';
+            document.getElementById('user-email').textContent = user.email;
+            document.getElementById('user-id').textContent = user.id;
+
+            document.getElementById('loading').classList.add('hidden');
+            document.getElementById('content').classList.remove('hidden');
+        } catch (err) {
+            // Not authenticated — go to login
             window.location.href = 'login.html';
         }
 
-        async function loadProfile() {
-            try {
-                // Endpoint GET /users/me
-                const user = await apiRequest('/users/me', 'GET', null, true);
-                
-                document.getElementById('user-name').textContent = user.full_name || 'User';
-                document.getElementById('user-email').textContent = user.email;
-                document.getElementById('user-id').textContent = user.id;
-                
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('content').classList.remove('hidden');
-                
-            } catch (err) {
-                console.error(err);
-                // Redirect happens in apiRequest if 401
-            }
-        }
-
-        function logout() {
-            removeToken();
+        const apiLogout = window.logout;
+        window.logout = async function() {
+            try { await apiLogout(); } catch (e) {}
             window.location.href = 'index.html';
         }
-
-        loadProfile();
-    </script> -->
+    })();
+    </script>
 </body>
 </html>
