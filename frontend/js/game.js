@@ -27,7 +27,7 @@ function updateUi(game) {
     _locked = true;
     disableAllKeys();
   } else if (game.status === 'LOST') {
-    setMessage('You lost. The word was kept secret. 😞');
+    setMessage(`You lost. The word was: ${game.revealed_word || '(hidden)'}`);
     _locked = true;
     disableAllKeys();
   }
@@ -51,6 +51,14 @@ async function doGuess(letter) {
   try {
     const game = await apiRequest(`/sessions/${_sessionId}/games/${_gameId}/guess`, 'POST', { letter });
     updateUi(game);
+  
+    (game.guessed_letters || []).forEach(l => {
+
+      const el = document.getElementById('key-' + l.toLowerCase());
+
+      if (el) el.disabled = true;
+
+    });
   } catch (err) {
     // show server message
     setMessage(err.message || 'Guess failed', true);
