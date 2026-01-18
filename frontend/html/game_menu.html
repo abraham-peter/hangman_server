@@ -4,11 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/frontend/css/game_menu.css">
+    <link rel="stylesheet" href="../css/game_menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
-    <script src="/frontend/javascript/main.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <title>
         Hangman Server
     </title>
@@ -18,35 +17,29 @@
 
 <body>
     <div class="menu_container">
-        <h1 class="title">HANGMAN</h1>
+        <!-- Title removed: background already contains the title graphic -->
 
         <div class="menu_buttons">
-            <div>
-                <a href="/frontend/html/game.html">
-                    <button>Single Player</button>
-                </a>
+            <div class="button_row">
+                <div class="button_bg panel-top">
+                    <a href="game.html" style="text-decoration: none;"><button id="play-btn" class="small-btn">Play</button></a>
+                </div>
             </div>
-            <div>
-                <a href="/frontend/html/online_game.html">
-                    <button>Multy Player</button>
-                </a>
+            <div class="button_row">
+                <div class="button_bg panel-bottom">
+                    <button id="exit-btn" class="small-btn">Exit</button>
+                </div>
             </div>
-            
-            
         </div>
-        <img class="baloon_child" src="/frontend/images/baloon_child.png">
-        <img class="sound_button" src="/frontend/images/sound_button.png">
-        <img class="help_button" src="/frontend/images/help_button.png">
-        <img  class="baloon" src="/frontend/images/baloon.png" >
-        <a href="/frontend/html/login.html">
-            <button class="log_in_button_menu">Log In</button>
-        </a>
+        
+        <div class="button_bg login_button_bg">
+            <a href="login.html" style="text-decoration: none;"><button id="login-btn" class="small-btn">Sign In</button></a>
+        </div>
 
     </div>
     
      
-
-
+    <script src="../js/main.js"></script>
 </body>
 
 

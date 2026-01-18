@@ -1,0 +1,338 @@
+:root {
+    /* Colors inspired by the React frontend (oklch converted to hex approximation) */
+    --background: #ffffff;
+    --foreground: #0f172a;
+    
+    --card: #ffffff;
+    --card-foreground: #0f172a;
+    
+    --popover: #ffffff;
+    --popover-foreground: #0f172a;
+    
+    /* Primary Color - approx Teal used in the app */
+    --primary: #009688; 
+    --primary-foreground: #ffffff;
+    
+    --secondary: #f1f5f9;
+    --secondary-foreground: #0f172a;
+    
+    --muted: #f1f5f9;
+    --muted-foreground: #64748b;
+    
+    --accent: #f1f5f9;
+    --accent-foreground: #0f172a;
+    
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    
+    --border: #e2e8f0;
+    --input: #e2e8f0;
+    --ring: #009688;
+    
+    --radius: 0.5rem;
+    
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: #f8fafc;
+    color: var(--foreground);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.auth-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.auth-left {
+    flex: 1;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+}
+
+.auth-left img {
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+}
+
+.auth-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem;
+    background-color: white;
+    position: relative;
+}
+
+.auth-footer {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.auth-footer-text {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin-right: 0.5rem;
+}
+
+.auth-footer a {
+    color: var(--muted-foreground);
+    transition: color 0.2s;
+}
+
+.auth-footer a:hover {
+    color: var(--foreground);
+}
+
+.auth-footer svg {
+    width: 18px;
+    height: 18px;
+}
+
+.container {
+    background-color: transparent;
+    color: var(--card-foreground);
+    border-radius: 0;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+/* Single column layout for non-auth pages */
+body.single-column {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.single-column .container {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    padding: 2rem;
+}
+
+/* Responsive for mobile */
+@media (max-width: 768px) {
+    .auth-layout {
+        flex-direction: column;
+    }
+    
+    .auth-left {
+        padding: 2rem;
+        min-height: 200px;
+    }
+    
+    .auth-left img {
+        max-width: 150px;
+    }
+    
+    .auth-footer {
+        position: static;
+        margin-top: 2rem;
+        justify-content: center;
+    }
+}
+
+/* Layout helpers */
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.auth-header {
+    margin-bottom: 2rem;
+    text-align: left;
+}
+
+.logo {
+    height: 3rem; /* approx 48px */
+    width: auto;
+    margin-bottom: 1rem;
+}
+
+h1 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+    color: var(--foreground);
+}
+
+p.subtitle {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-top: 0.5rem;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+}
+
+input {
+    height: 2.5rem;
+    width: 100%;
+    border-radius: calc(var(--radius) - 2px);
+    border: 1px solid var(--input);
+    background-color: transparent;
+    padding: 0 0.75rem;
+    font-size: 0.875rem;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    margin: 0; /* Override default margin */
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: 0 0 0 2px rgba(0, 150, 136, 0.2); /* ring effect */
+}
+
+/* Buttons */
+button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: calc(var(--radius) - 2px);
+    font-size: 0.875rem;
+    font-weight: 500;
+    height: 2.5rem;
+    padding: 0 1rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    border: none;
+    margin-top: 10px;
+}
+
+button.primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+}
+
+button.primary:hover {
+    opacity: 0.9;
+}
+
+button.secondary {
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+    background-color: #e2e8f0; /* darker shade of secondary */
+}
+
+button.destructive {
+    background-color: var(--destructive);
+    color: var(--destructive-foreground);
+}
+
+button.destructive:hover {
+    opacity: 0.9;
+}
+
+/* Links */
+a.link {
+    font-size: 0.875rem;
+    color: var(--primary);
+    text-decoration: none;
+    text-align: center;
+    margin-top: 1rem;
+    display: block;
+}
+
+a.link:hover {
+    text-decoration: underline;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.error {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: #991b1b; /* Red */
+    padding: 0.75rem;
+    border-radius: var(--radius);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+/* Admin Specific */
+.admin-container {
+    max-width: 800px; /* Wider for admin */
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.info-card {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-top: 0.25rem;
+}

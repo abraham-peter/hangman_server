@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" href="/frontend/css/game.css">
+        <link rel="stylesheet" href="../css/game.css">
     </head>
     <body>
-        <div>
-            <h2>Hints (example no repeating letters)</h2>
+    <div class="game-wrapper">
+        <div class="top-center">
             <h1 id="word-pattern">_ _ _ _</h1>
             <div id="game-info" style="margin-top:0.5rem;">
                 <div id="remaining-misses">Remaining misses: <span id="misses-count">-</span></div>
@@ -43,12 +43,14 @@
                 <button id="key-y">Y</button>
                 <button id="key-z">Z</button>
             </div>
-            <div class="boy_w_monster">
-                <img src="/frontend/images/baloon_w_monster.png" alt="">
-            </div>
+            <div class="boy_w_monster" aria-hidden="true"></div>
 
         </div>
-    <script src="/frontend/js/app.js"></script>
-    <script src="/frontend/js/game.js"></script>
+        <div class="pot">
+            <img src="../assets/pot.png" alt="pot">
+        </div>
+    </div>
+    <script src="../js/app.js"></script>
+    <script src="../js/game.js"></script>
     </body>
 </html>

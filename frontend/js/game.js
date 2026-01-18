@@ -98,12 +98,15 @@ async function createGame(sessionId) {
 }
 
 async function init() {
+  // NOTE: MUST BE LOGGED IN - original behavior commented out to allow game to run without login.
+  /*
   try {
     await getCurrentUser();
   } catch (err) {
     window.location.href = 'login.html';
     return;
   }
+  */
 
   attachButtonHandlers();
   window.addEventListener('keydown', keyboardHandler);

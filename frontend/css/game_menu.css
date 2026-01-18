@@ -1,12 +1,12 @@
 body{
     margin:0;
     padding: 0;
-    background: white;
-    background-image: url("/frontend/images/background_trees.png");
+    background-image: url("../assets/menu.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    font-family: 'Amatic SC', cursive;
+    font-family: 'Press Start 2P', cursive;
+    min-height: 100vh;
 }
 .menu_container{
     display: flex;
@@ -27,18 +27,66 @@ body{
     display: flex;
     flex-direction: column;
     gap:1rem;   
+    align-items: center;
 }
-.menu_buttons button{
-    background: white;
-    border:3px solid black;
-    font-size: 2.5rem;
-    padding: 0.5rem 3rem;
+.button_row{
+    width: 100%;
+    display:flex;
+    justify-content: center;
+}
+.button_bg{
+    background-image: url("../assets/button_bg.png");
+    background-repeat: no-repeat;
+    background-size: contain; /* keep asset aspect and borders intact */
+    background-position: center;
+    width: 370px; /* fixed width for consistent button size */
+    height: 96px; /* slimmer, like the design */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    position: relative; /* for the top highlight */
+    margin: 1.2rem 0; /* spacing between buttons */
+}
+
+/* thin white highlight near top to mimic the inner white stripe */
+.button_bg::before{
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 10%;
+    right: 10%;
+    height: 8px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 3px;
+    pointer-events: none;
+}  
+.button_bg .small-btn{
+    display: inline-block;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    line-height: calc(100% - 20px);
+    background: transparent;
+    border: none;
+    font-size: 2rem; /* adjusted for pixel font */
+    padding: 0 0.6rem; /* keep vertical space controlled by height */
     cursor: pointer;
-    font-family: 'Amatic SC', cursive;
+    font-family: 'Press Start 2P', cursive;
+    color: #fff; /* white text */
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
+    font-weight: 400;
+    text-shadow: 0 3px 0 rgba(0,0,0,0.45); /* give the raised pixel look */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+} 
+.button_bg .small-btn:hover{
+    transform: scale(1.04);
 }
-.menu_buttons button:hover{
-    transform: scale(1.05);
-}
+/* smaller spacing between the two button backgrounds */
+.button_row + .button_row{ margin-top: 0.8rem; }
 .baloon_child{
     position: absolute;
     bottom:170px;
@@ -64,14 +112,43 @@ body{
     left: 50px;
     width: 40px;
 }
-.log_in_button_menu{
-    background: white;
-    border:3px solid black;
-    font-size: 2.5rem;
-    padding: 0.5rem 3rem;
-    cursor: pointer;
-    font-family: 'Amatic SC', cursive;
+.login_button_bg{
     position: absolute;
     top:20px;
     right:5px;
+    width: 320px; /* slightly narrower to avoid overlap */
+    height: 96px; /* match play button height */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background-image: url("../assets/button_bg.png");
+    background-repeat: no-repeat;
+    background-size: 100% 100%; /* ensure the asset exactly fills the box */
+    background-position: center;
+    box-sizing: border-box;
+}
+
+/* ensure anchor has no underline inside the login bg */
+.login_button_bg a{ text-decoration: none; }
+
+/* Specific styling to keep the login text on one line and fit the button */
+.login_button_bg .small-btn{
+    font-size: 0.95rem; /* slightly smaller for a single-line fit */
+    letter-spacing: 0.12rem;
+    white-space: nowrap; /* prevent line breaks */
+    text-transform: none; /* keep 'Sign In' capitalization */
+    padding: 0 0.6rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background: transparent;
+    border: none;
+}
+
+/* responsive tweak for small screens */
+@media (max-width: 480px) {
+    .login_button_bg{
+        width: 48%;
+        right: 1rem;
+    }
+    .login_button_bg .small-btn{ font-size: 0.9rem; }
 }

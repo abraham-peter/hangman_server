@@ -1,9 +1,33 @@
 body{
     margin:0;
     padding: 0;
-    background: white;
+    background-image: url("../assets/menu_bg.png");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
     font-family: 'Amatic SC', cursive;
+    min-height: 100vh;
 }
+
+.game-wrapper{
+    position: relative;
+    min-height: 100vh;
+}
+
+.top-center{
+    position: absolute;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+}
+
+#word-pattern{
+    font-size: 4rem;
+    letter-spacing: 0.8rem;
+    margin: 0;
+}
+
 .container{
     display: flex;
     align-items:center;
@@ -11,12 +35,12 @@ body{
     flex-direction:row;
     height: 100vh;
 }
-.grid_letters{
-    display: grid;
-    grid-template-columns: repeat(6,1fr);
-    height: 50vh;
 
+/* hide on-screen letters - use physical keyboard only */
+.grid_letters{
+    display: none;
 }
+
 .grid_letters button{
     margin: 1rem;
     padding: 0.5rem;
@@ -26,10 +50,24 @@ body{
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
-
 }
 
 .active-press {
     transform: scale(0.95);
     background-color: #ddd;
+}
+
+.pot{
+    position: absolute;
+    bottom: 145px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 180px;
+    pointer-events: none;
+}
+
+.pot img{
+    width: 100%;
+    height: auto;
+    display:block;
 }
