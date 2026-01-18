@@ -18,7 +18,14 @@ function setMessage(text, isError = false) {
 }
 
 function updateUi(game) {
-  document.getElementById('word-pattern').textContent = renderPattern(game.pattern);
+  // Ensure pattern length matches reported length (if available) and fix if necessary
+  let pattern = game.pattern || '';
+  if (game.length && pattern.length !== game.length) {
+    console.warn(`Pattern length ${pattern.length} != reported length ${game.length}; adjusting pattern.`);
+    if (pattern.length < game.length) pattern = pattern.padEnd(game.length, '*');
+    else pattern = pattern.slice(0, game.length);
+  }
+  document.getElementById('word-pattern').textContent = renderPattern(pattern);
   document.getElementById('misses-count').textContent = String(game.remaining_misses);
   document.getElementById('wrong-list').textContent = game.wrong_letters.map(l => l.toUpperCase()).join(' ') || '-';
 
