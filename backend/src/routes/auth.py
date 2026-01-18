@@ -21,11 +21,20 @@ load_dotenv()
 
 class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
     async def __call__(self, request: Request) -> str | None:
-        # Extragem token-ul din cookie
+        # Try token in cookie first (cookie value is like "Bearer <token>")
         token: str | None = request.cookies.get("access_token")
-        
-        scheme, param = get_authorization_scheme_param(token)
-        if not token or scheme.lower() != "bearer":
+        scheme: str | None = None
+        param: str | None = None
+
+        if token:
+            scheme, param = get_authorization_scheme_param(token)
+
+        # Fallback to Authorization header if cookie not present or malformed
+        if not param or not scheme or scheme.lower() != "bearer":
+            authorization: str | None = request.headers.get("authorization")
+            scheme, param = get_authorization_scheme_param(authorization)
+
+        if not param or scheme is None or scheme.lower() != "bearer":
             if self.auto_error:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
@@ -33,16 +42,17 @@ class OAuth2PasswordBearerWithCookie(OAuth2PasswordBearer):
                 )
             else:
                 return None
+
         return param
 
 
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGORITHM=os.getenv("ALGORITHM")
-ACCESS_TOKEN_EXPIRE_MINUTES=os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES")
+ACCESS_TOKEN_EXPIRE_MINUTES=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 router=APIRouter()
 password_hash = PasswordHash.recommended()
-oauth2_scheme=OAuth2PasswordBearer(tokenUrl="auth/login")
+oauth2_scheme=OAuth2PasswordBearerWithCookie(tokenUrl="auth/login")
 def verrify_password(plain_password:str,hashed_password:str):
     return password_hash.verify(plain_password,hashed_password)
 
@@ -62,9 +72,9 @@ def get_user_by_id(db, user_id: str):
 def authenticate_user(db:Session,username:str,password:str) -> UserInDB | None:
     user=get_user_by_username(db,username)
     if not user:
-        return False
+        return None
     if not verrify_password(password,user.hashed_password):
-        return False
+        return None
     return user
 def create_access_token(data: dict, expires_delta: timedelta | None = None):
     to_encode = data.copy()
