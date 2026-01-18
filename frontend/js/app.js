@@ -1,4 +1,7 @@
-const API_BASE = 'http://localhost:8000';
+// Auto-detect API base URL: use same origin in production, localhost:8000 in development
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+  ? 'http://localhost:8000' 
+  : window.location.origin;
 
 async function apiRequest(path, method = 'GET', body = null, options = { json: true }) {
   const url = API_BASE + path;

@@ -5,7 +5,7 @@ from database import get_db
 from models import UserDB 
 from schemas.dictionary import DictionaryCreate, DictionaryOut, DictionaryPatch
 from services.word_service import get_all_dictionaries, create_dictionary, update_dictionary, get_dictionary_sample
-from auth import get_current_active_user
+from routes.auth import get_current_active_user
 
 def admin_required(user: UserDB):
     if not user.is_admin:

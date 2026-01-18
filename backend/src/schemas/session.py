@@ -4,8 +4,8 @@ from typing import Union
 from enum import Enum
 from sqlalchemy import Enum as SAEEnum
 class SessionCreate(BaseModel):
-    num_games: int |None
-    dictionary_id: str
+    num_games: int | None
+    dictionary_id: int
     difficulty: str 
     language: str 
     max_misses: int

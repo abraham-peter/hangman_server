@@ -35,7 +35,12 @@ class Session(Base):
     dictionary=relationship("DictionaryDB")
 
     num_games=Column(Integer,nullable=False)
-    params=Column(JSON,nullable=True) # dictionary_id, difficulty, language, max_misses, allow_word_guess, seed # SE POATE IGNORA.
+    difficulty=Column(String,nullable=True)
+    language=Column(String,nullable=True)
+    max_misses=Column(Integer,default=6,nullable=False)
+    allow_word_guess=Column(Boolean,default=False,nullable=False)
+    seed=Column(Integer,nullable=True)
+    params=Column(JSON,nullable=True) # Deprecated - use individual columns above
     status=Column(SAENum(SessionStatus,name="session_status"),default=SessionStatus.ACTIVE,nullable=False)
     created_at=Column(DateTime(timezone=True),server_default=func.now())
     finished_at=Column(DateTime(timezone=True),nullable=True)
@@ -58,6 +63,7 @@ class Game(Base):
     result=Column(String,nullable=True)
     created_at=Column(DateTime(timezone=True),server_default=func.now())
     updated_at=Column(DateTime(timezone=True),server_default=func.now(),onupdate=func.now())
+    finished_at=Column(DateTime(timezone=True),nullable=True)
     history=Column(JSON,nullable=True, default=list)
 
     session= relationship("Session",back_populates="games")

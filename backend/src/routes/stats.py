@@ -19,9 +19,9 @@ router=APIRouter(
 @router.get("/users/{user_id}", status_code=status.HTTP_200_OK)
 async def user_stats(
     user_id: int,
-    period: str | None = Query(default="all"),
-    current_user:Annotated[User, Depends(get_current_active_user)],
-    db:Session=Depends(get_db)
+    current_user: Annotated[User, Depends(get_current_active_user)],
+    db: Session = Depends(get_db),
+    period: str | None = Query(default="all")
 ):
     if current_user.user_id != user_id:
         raise HTTPException(status_code=403, detail="Access DENIED :(")

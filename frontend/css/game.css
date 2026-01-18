@@ -57,7 +57,7 @@ body{
     background-color: #ddd;
 }
 
-.pot{
+.flower-container{
     position: absolute;
     bottom: 145px;
     left: 50%;
@@ -66,8 +66,9 @@ body{
     pointer-events: none;
 }
 
-.pot img{
+.flower-container img{
     width: 100%;
     height: auto;
-    display:block;
+    display: block;
+    transition: opacity 0.5s ease-in-out;
 }

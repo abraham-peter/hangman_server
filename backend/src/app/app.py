@@ -10,7 +10,7 @@ from routes.stats import router as stats_router
 from routes.words import router as words_router
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-
+import pathlib
 import redis.asyncio as redis
 
 import os
@@ -47,12 +47,15 @@ async def shutdown():
     if redis_client:
         await redis_client.close()
 
-app.mount("/css",StaticFiles(directory="frontend/css"),name="css")
-templates=Jinja2Templates(directory="frontend/html")
+import pathlib
+# Go up 3 levels: app -> src -> backend -> hangman_server (root)
+root_dir = pathlib.Path(__file__).parent.parent.parent.parent
+app.mount("/css", StaticFiles(directory=str(root_dir / "frontend" / "css")), name="css")
+templates = Jinja2Templates(directory=str(root_dir / "frontend" / "html"))
 
 
-@app.get("/",response_model=HTMLResponse)
-async def home(request:Request):
+@app.get("/", response_class=HTMLResponse)
+async def home(request: Request):
     return templates.TemplateResponse("game_menu.html",{"request":request})
 
 app.include_router(

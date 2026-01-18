@@ -29,6 +29,9 @@ function updateUi(game) {
   document.getElementById('misses-count').textContent = String(game.remaining_misses);
   document.getElementById('wrong-list').textContent = game.wrong_letters.map(l => l.toUpperCase()).join(' ') || '-';
 
+  // Update flower progression
+  updateFlower(game);
+
   if (game.status === 'WON') {
     setMessage('You won! 🎉');
     _locked = true;
@@ -37,6 +40,34 @@ function updateUi(game) {
     setMessage(`You lost. The word was: ${game.revealed_word || '(hidden)'}`);
     _locked = true;
     disableAllKeys();
+  }
+}
+
+function updateFlower(game) {
+  const flowerImg = document.getElementById('flower-img');
+  if (!flowerImg) return;
+
+  // Calculate progress based on revealed letters
+  const pattern = game.pattern || '';
+  const totalLetters = pattern.length;
+  const revealedLetters = pattern.split('').filter(ch => ch !== '*').length;
+  const progressPercent = totalLetters > 0 ? (revealedLetters / totalLetters) * 100 : 0;
+
+  if (game.status === 'LOST') {
+    // Wilted flower when lost
+    flowerImg.src = '../assets/wilted_flower.png';
+  } else if (game.status === 'WON') {
+    // Full flower when won
+    flowerImg.src = '../assets/full_flower.png';
+  } else if (progressPercent >= 50) {
+    // Full flower when more than 50% revealed
+    flowerImg.src = '../assets/full_flower.png';
+  } else if (progressPercent >= 20) {
+    // Leaves when some letters are revealed
+    flowerImg.src = '../assets/pot_w_leaves.png';
+  } else {
+    // Start with soil
+    flowerImg.src = '../assets/pot_w_soil.png';
   }
 }
 

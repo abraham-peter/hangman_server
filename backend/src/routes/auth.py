@@ -63,11 +63,6 @@ def get_user(db,username:str):
     if username in db:
         user_dict=db[username]
         return UserInDB(**user_dict)
-def get_user_by_id(db, user_id: str):
-    for user_data in db.values():
-        if user_data.get("user_id") == user_id:
-            return UserInDB(**user_data)
-    return None
 
 def authenticate_user(db:Session,username:str,password:str) -> UserInDB | None:
     user=get_user_by_username(db,username)
@@ -115,7 +110,7 @@ async def get_current_active_user(
 
     
 
-@router.post("/auth/register", status_code=status.HTTP_200_OK, response_model=User)
+@router.post("/register", status_code=status.HTTP_200_OK, response_model=User)
 async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
     db_user=get_user_by_username(db,register.username)
     if db_user:
@@ -145,7 +140,7 @@ async def register_user(register: RegisterUser,db:Session=Depends(get_db)):
     db.refresh(new_user)
     return new_user
     
-@router.post("/auth/login", status_code=status.HTTP_201_CREATED, response_model=Token,dependencies=[Depends(rate_limit(5, 60))])  
+@router.post("/login", status_code=status.HTTP_201_CREATED, response_model=Token,dependencies=[Depends(rate_limit(5, 60))])  
 async def login_for_access_token(
     response:Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
@@ -168,19 +163,18 @@ async def login_for_access_token(
         httponly=True,
         max_age=ACCESS_TOKEN_EXPIRE_MINUTES*60, 
         samesite="lax",
-        secure=True,
-
+        secure=False,  # Set to True only in production with HTTPS
     )
-    return {"messsage":"Logged in succesfully"}
+    return {"access_token": access_token, "token_type": "bearer"}
 
-@router.post("/auth/logout")
+@router.post("/logout")
 async def logout(response: Response):
     response.delete_cookie("access_token")
     return {"message": "Logged out"}
     
 
 
-@router.post("/auth/refresh", status_code=status.HTTP_200_OK)
+@router.post("/refresh", status_code=status.HTTP_200_OK)
 async def refresh_token(current_user: Annotated[UserDB, Depends(get_current_active_user)]):
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     new_token = create_access_token(
